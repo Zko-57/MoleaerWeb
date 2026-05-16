@@ -10,7 +10,9 @@
   <link rel="apple-touch-icon" href="./images/moleaer-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="./images/frutiger_tech.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="./images/underwater_ambient.jpg" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -84,7 +86,7 @@
       </div>
       <div class="hero-visual scroll-reveal delay-1">
         <div class="hero-image-frame premium-glass">
-          <img src="./images/frutiger_tech.png" alt="Esfera de agua con nanoburbujas y circuito tecnológico" class="hero-image">
+          <img src="./images/frutiger_tech.jpg" alt="Esfera de agua con nanoburbujas y circuito tecnológico" class="hero-image" width="640" height="640" fetchpriority="high" decoding="async">
           <div class="hud-ring"></div>
           <div class="hud-ring hud-ring-2"></div>
         </div>
@@ -141,7 +143,7 @@
             <a href="#nanoburbujas" class="link-arrow">Cómo funciona →</a>
           </div>
           <div class="bento-visual">
-            <img src="./images/frutiger_bubbles.png" alt="Nanoburbujas suspendidas en agua" class="bento-img">
+            <img src="./images/frutiger_bubbles.jpg" alt="Nanoburbujas suspendidas en agua" class="bento-img" width="560" height="560" loading="lazy" decoding="async">
           </div>
         </div>
 
@@ -267,7 +269,7 @@
         </div>
         <div class="comparison-visual" data-focus="none">
           <div class="comparison-zoom">
-            <img src="./images/lettuce_roots.png" alt="Comparativa de raíces con y sin Moleaer">
+            <img src="./images/lettuce_roots.jpg" alt="Comparativa de raíces con y sin Moleaer" width="1600" height="900" loading="lazy" decoding="async">
           </div>
           <div class="comparison-labels">
             <button type="button" class="label-bad" data-focus="bad">Sin Moleaer</button>
@@ -317,7 +319,7 @@
     <section class="section">
       <div class="app-showcase scroll-reveal">
         <div class="app-image-wrapper premium-glass">
-          <img src="./images/water_hands.png" alt="Manos sosteniendo agua pura con nanoburbujas" class="app-hero-img">
+          <img src="./images/water_hands.jpg" alt="Manos sosteniendo agua pura con nanoburbujas" class="app-hero-img" width="1400" height="900" loading="lazy" decoding="async">
           <div class="glass-overlay"></div>
           <div class="floating-tag premium-glass tag-1">
             <span class="tag-dot"></span> Agua tratada en tiempo real
@@ -639,6 +641,6 @@
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 2.9 18.7L2 22l3.4-.9A11.9 11.9 0 1 0 20.5 3.5zM12 20.2a8.3 8.3 0 0 1-4.2-1.1l-.3-.2-2 .5.5-1.9-.2-.3A8.3 8.3 0 1 1 12 20.2zm4.6-6.2c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.2-.3 0-.4.1-.6l.4-.4.2-.4a.5.5 0 0 0 0-.4c0-.1-.6-1.4-.8-1.9s-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-1 2.2 5.3 5.3 0 0 0 1.1 2.7 12.1 12.1 0 0 0 4.6 4 5.4 5.4 0 0 0 2.5.5 2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .2-1.2c-.1-.2-.3-.2-.6-.4z"/></svg>
   </a>
 
-  <script src="./main.js"></script>
+  <script src="./main.js" defer></script>
 </body>
 </html>

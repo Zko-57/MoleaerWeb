@@ -73,7 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
      1. NANOBURBUJAS — Capa decorativa CSS (rise infinito)
      ========================================================= */
   const particlesContainer = document.getElementById('particles-container');
-  const BUBBLE_COUNT = 45;
+  // Detecta dispositivos modestos para reducir carga
+  const isLowEnd = window.matchMedia('(max-width: 900px)').matches
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+
+  const BUBBLE_COUNT = isLowEnd ? 18 : 32;
 
   function createNanoBubble() {
     const bubble = document.createElement('div');
@@ -100,24 +105,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* =========================================================
      2. CANVAS NANOBURBUJAS INTERACTIVO (capa reactiva al ratón)
+     Se desactiva en dispositivos modestos para no saturar GPU.
      ========================================================= */
   const canvas = document.getElementById('bubble-canvas');
-  if (canvas) {
-    const ctx = canvas.getContext('2d');
+  if (canvas && !isLowEnd) {
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5); // limita pixel ratio
     let width, height;
     const bubbles = [];
     const mouse = { x: -9999, y: -9999 };
+    let visible = true;
 
     function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
 
+    // mousemove throttled vía rAF
+    let pendingMouse = null;
     window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      pendingMouse = { x: e.clientX, y: e.clientY };
+    }, { passive: true });
+
+    // Pausa el canvas cuando la pestaña no está visible
+    document.addEventListener('visibilitychange', () => {
+      visible = !document.hidden;
+      if (visible) requestAnimationFrame(animate);
     });
 
     class Bubble {
@@ -135,11 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
         this.x += this.vx;
         this.y += this.vy;
 
-        // Repulsión sutil del cursor
         const dx = this.x - mouse.x;
         const dy = this.y - mouse.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 100) {
+        const dist2 = dx * dx + dy * dy; // sin sqrt para abaratar
+        if (dist2 < 10000) {
+          const dist = Math.sqrt(dist2);
           const force = (100 - dist) / 100;
           this.x += (dx / dist) * force * 1.5;
           this.y += (dy / dist) * force * 1.5;
@@ -158,12 +178,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const COUNT = Math.min(120, Math.floor(width / 14));
+    // Mitad de partículas que antes (60 vs 120) y limita por ancho
+    const COUNT = Math.min(60, Math.floor(width / 22));
     for (let i = 0; i < COUNT; i++) bubbles.push(new Bubble());
 
     function animate() {
+      if (!visible) return;
+      if (pendingMouse) { mouse.x = pendingMouse.x; mouse.y = pendingMouse.y; pendingMouse = null; }
       ctx.clearRect(0, 0, width, height);
-      bubbles.forEach(b => { b.update(); b.draw(); });
+      for (let i = 0; i < bubbles.length; i++) {
+        bubbles[i].update();
+        bubbles[i].draw();
+      }
       requestAnimationFrame(animate);
     }
     animate();
