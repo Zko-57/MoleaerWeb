@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moleaer | Tecnología Corporativa de Nanoburbujas</title>
+  <meta name="description" content="Moleaer es la compañía líder mundial en tecnología de nanoburbujas: tratamiento de agua, agricultura, acuicultura, lagos y aguas residuales sin químicos." />
+  <meta name="theme-color" content="#001428" />
+  <link rel="icon" type="image/png" href="./images/moleaer-logo.png" />
+  <link rel="apple-touch-icon" href="./images/moleaer-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- Fondo Ambiente -->
+  <div id="ambient-background">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
+    <div class="tech-grid"></div>
+    <!-- Rayos de luz dinámicos: simulan la luz solar atravesando
+         la superficie ondulante del agua. Cada shaft tiene su propio
+         ritmo de balanceo y pulsación para un movimiento orgánico. -->
+    <div class="light-rays" aria-hidden="true">
+      <span class="ray ray-1"></span>
+      <span class="ray ray-2"></span>
+      <span class="ray ray-3"></span>
+      <span class="ray ray-4"></span>
+      <span class="ray ray-5"></span>
+      <span class="ray ray-6"></span>
+    </div>
+  </div>
+
+  <!-- Canvas Nanoburbujas (capa interactiva) -->
+  <canvas id="bubble-canvas"></canvas>
+
+  <!-- Partículas decorativas -->
+  <div id="particles-container"></div>
+
+  <!-- Header -->
+  <header class="navbar premium-glass">
+    <div class="nav-container">
+      <a href="#top" class="nav-logo" aria-label="Moleaer — Inicio">
+        <img src="./images/moleaer-logo.png" alt="Moleaer" class="brand-logo brand-logo-nav" />
+      </a>
+      <nav class="nav-links">
+        <a href="#tecnologia">Tecnología</a>
+        <a href="#nanoburbujas">Nanoburbujas</a>
+        <a href="#impacto">Impacto</a>
+        <a href="#industrias">Industrias</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="#" class="btn-ghost">Iniciar Sesión</a>
+        <a href="#contacto" class="btn-pill">Hablar con un Experto</a>
+      </div>
+      <button class="nav-burger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content scroll-reveal">
+        <div class="badge"><span class="badge-dot"></span>Nueva Generación de Tratamiento de Agua</div>
+        <h1 class="hero-title">El Futuro del Agua,<br><span class="text-gradient">A Escala Nano.</span></h1>
+        <p class="hero-subtitle">Fusionamos ciencia, ingeniería y datos para transformar el agua con nanoburbujas. Restauramos ecosistemas, revolucionamos la agricultura y optimizamos la industria — sin químicos añadidos.</p>
+        <div class="hero-cta">
+          <a href="#contacto" class="btn-pill btn-large">Descubrir la Tecnología</a>
+          <a href="#nanoburbujas" class="btn-ghost btn-large"><span class="play-icon">▶</span> Ver el Impacto</a>
+        </div>
+        <div class="hero-trust">
+          <span>Confiado por líderes globales en</span>
+          <div class="trust-row">
+            <span>Acuicultura</span><span>·</span><span>Agricultura</span><span>·</span><span>Tratamiento de Aguas</span><span>·</span><span>Alimentos &amp; Bebidas</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual scroll-reveal delay-1">
+        <div class="hero-image-frame premium-glass">
+          <img src="./images/frutiger_tech.png" alt="Esfera de agua con nanoburbujas y circuito tecnológico" class="hero-image">
+          <div class="hud-ring"></div>
+          <div class="hud-ring hud-ring-2"></div>
+        </div>
+        <div class="floating-stats premium-glass">
+          <div class="stat">
+            <span class="stat-number">2500×</span>
+            <span class="stat-label">Más pequeñas que un grano de sal</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-number">&gt;85%</span>
+            <span class="stat-label">Transferencia de gas</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BARRA DE MÉTRICAS GLOBALES -->
+    <section class="global-metrics scroll-reveal">
+      <div class="metrics-inner premium-glass">
+        <div class="metric">
+          <div class="metric-value" data-target="4" data-suffix="M+ L/min">0</div>
+          <div class="metric-label">Agua tratada por minuto</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" data-target="10000" data-suffix="+">0</div>
+          <div class="metric-label">Generadores instalados</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" data-target="50" data-suffix="+">0</div>
+          <div class="metric-label">Países con presencia</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value" data-target="550" data-suffix="+">0</div>
+          <div class="metric-label">Cuerpos de agua restaurados</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECNOLOGÍA / BENTO -->
+    <section id="tecnologia" class="section">
+      <div class="section-header scroll-reveal">
+        <div class="badge">Tecnología patentada</div>
+        <h2>Ingeniería de precisión.<br><span class="text-gradient">Resultados medibles.</span></h2>
+        <p>Nuestra tecnología patentada altera las propiedades físicas del agua para resolver los desafíos industriales más complejos del planeta.</p>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-item span-2 premium-glass scroll-reveal">
+          <div class="bento-content">
+            <div class="bento-tag">Estabilidad &amp; Difusión</div>
+            <h3>Flotabilidad Neutra</h3>
+            <p>Las nanoburbujas carecen de la flotabilidad suficiente para alcanzar la superficie. Permanecen suspendidas en el líquido durante meses, entregando oxígeno de forma continua hasta donde se necesita.</p>
+            <a href="#nanoburbujas" class="link-arrow">Cómo funciona →</a>
+          </div>
+          <div class="bento-visual">
+            <img src="./images/frutiger_bubbles.png" alt="Nanoburbujas suspendidas en agua" class="bento-img">
+          </div>
+        </div>
+
+        <div class="bento-item premium-glass scroll-reveal delay-1">
+          <div class="bento-icon icon-chem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3v6L3 19a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V3"/><path d="M8 3h8"/></svg>
+          </div>
+          <h3>Oxidación sin químicos</h3>
+          <p>Al colapsar, las nanoburbujas generan radicales hidroxilo (HO•) que destruyen patógenos y biopelículas de forma 100% natural.</p>
+        </div>
+
+        <div class="bento-item premium-glass scroll-reveal delay-2">
+          <div class="bento-icon icon-energy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg>
+          </div>
+          <h3>Eficiencia energética</h3>
+          <p>Reduce el consumo eléctrico en sistemas de aireación aeróbica hasta un <b>40%</b>, optimizando el OPEX de tu planta.</p>
+        </div>
+
+        <div class="bento-item premium-glass scroll-reveal delay-1">
+          <div class="bento-icon icon-data">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+          </div>
+          <h3>Monitoreo en tiempo real</h3>
+          <p>Todos nuestros equipos integran telemetría IoT: oxígeno disuelto, caudal, presión y diagnóstico predictivo desde la nube.</p>
+        </div>
+
+        <div class="bento-item span-2 premium-glass scroll-reveal delay-2">
+          <div class="bento-content">
+            <div class="bento-tag">I+D Global</div>
+            <h3>El mayor equipo de I+D en nanoburbujas del mundo</h3>
+            <p>Química de superficies, dinámica de fluidos y electroquímica colaboran para convertir cada descubrimiento científico en soluciones reales para tu industria.</p>
+            <a href="#contacto" class="link-arrow">Conocer al equipo de I+D →</a>
+          </div>
+          <div class="bento-visual bento-rd">
+            <div class="rd-system">
+              <div class="rd-ring rd-ring-1"></div>
+              <div class="rd-ring rd-ring-2"></div>
+              <div class="rd-ring rd-ring-3"></div>
+              <div class="rd-orb"></div>
+
+              <!-- Cada órbita rota como un todo, manteniendo la simetría
+                   interna de sus satélites en cualquier instante. -->
+              <div class="rd-orbit rd-orbit-1">
+                <span class="rd-sat" style="--angle:  90deg; --orbit:  95px;"></span>
+                <span class="rd-sat" style="--angle: 270deg; --orbit:  95px;"></span>
+              </div>
+
+              <div class="rd-orbit rd-orbit-2">
+                <span class="rd-sat" style="--angle:   0deg; --orbit: 130px;"></span>
+                <span class="rd-sat" style="--angle: 180deg; --orbit: 130px;"></span>
+              </div>
+
+              <div class="rd-orbit rd-orbit-3">
+                <span class="rd-sat" style="--angle:  45deg; --orbit: 165px;"></span>
+                <span class="rd-sat" style="--angle: 135deg; --orbit: 165px;"></span>
+                <span class="rd-sat" style="--angle: 225deg; --orbit: 165px;"></span>
+                <span class="rd-sat" style="--angle: 315deg; --orbit: 165px;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NANOBURBUJAS - Comparativa -->
+    <section id="nanoburbujas" class="section">
+      <div class="section-header scroll-reveal">
+        <div class="badge">¿Qué son las nanoburbujas?</div>
+        <h2>2.500 veces más pequeñas.<br><span class="text-gradient">Infinitamente más poderosas.</span></h2>
+        <p>A diferencia de las burbujas comunes que suben y explotan, las nanoburbujas permanecen suspendidas en el líquido, mejorando el intercambio de gases y entregando oxígeno donde se necesita.</p>
+      </div>
+
+      <div class="compare-grid scroll-reveal">
+        <div class="compare-card premium-glass compare-bad">
+          <div class="compare-title">
+            <span class="compare-label">Convencional</span>
+            <h3>Burbujas grandes</h3>
+          </div>
+          <div class="compare-visual">
+            <div class="big-bubble bb-1"></div>
+            <div class="big-bubble bb-2"></div>
+            <div class="big-bubble bb-3"></div>
+          </div>
+          <ul class="compare-list">
+            <li><span>✕</span> Suben y explotan en segundos</li>
+            <li><span>✕</span> Baja transferencia de oxígeno</li>
+            <li><span>✕</span> Requieren mayor energía</li>
+          </ul>
+        </div>
+
+        <div class="compare-card premium-glass compare-good">
+          <div class="compare-title">
+            <span class="compare-label compare-label-pro">Moleaer</span>
+            <h3>Nanoburbujas</h3>
+          </div>
+          <div class="compare-visual">
+            <div class="nano-cloud" data-bubble-count="90"></div>
+          </div>
+          <ul class="compare-list">
+            <li><span>✓</span> Estables durante semanas</li>
+            <li><span>✓</span> Transferencia &gt; 85%</li>
+            <li><span>✓</span> Generan radicales hidroxilo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPACTO - Caso Lechuga -->
+    <section id="impacto" class="section section-dark">
+      <div class="comparison-container premium-glass scroll-reveal">
+        <div class="comparison-text">
+          <div class="badge badge-light">Caso de éxito · Agricultura</div>
+          <h2>El impacto es visible.</h2>
+          <p>Los sistemas de riego enriquecidos con nanoburbujas de Moleaer superoxigenan la zona radicular. El resultado es un desarrollo masivo de las raíces, mayor absorción de nutrientes y resistencia extrema a enfermedades, sin necesidad de fertilizantes adicionales.</p>
+          <ul class="check-list">
+            <li>Aumento del <b>25%</b> en rendimiento de cultivos</li>
+            <li>Raíces más blancas, densas y saludables</li>
+            <li>Supresión natural de <i>Pythium</i> y patógenos</li>
+            <li>Reducción de hasta <b>50%</b> en consumo de agua post-cosecha</li>
+          </ul>
+          <a href="#contacto" class="btn-pill btn-large">Solicitar el estudio</a>
+        </div>
+        <div class="comparison-visual" data-focus="none">
+          <div class="comparison-zoom">
+            <img src="./images/lettuce_roots.png" alt="Comparativa de raíces con y sin Moleaer">
+          </div>
+          <div class="comparison-labels">
+            <button type="button" class="label-bad" data-focus="bad">Sin Moleaer</button>
+            <button type="button" class="label-good" data-focus="good">Con Moleaer</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs DE IMPACTO -->
+    <section class="section impact-section">
+      <div class="section-header scroll-reveal">
+        <div class="badge">Nuestro Impacto</div>
+        <h2>Innovación que <span class="text-gradient">genera impacto positivo</span></h2>
+        <p>Estamos comprometidos con un impacto cuantificable. Así es cómo la tecnología Moleaer transforma industrias, reduce huella ambiental e impulsa el crecimiento sostenible.</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card premium-glass scroll-reveal">
+          <div class="kpi-number" data-target="20" data-suffix="%">0</div>
+          <p>Más capacidad en tratamiento de aguas residuales.</p>
+        </div>
+        <div class="kpi-card premium-glass scroll-reveal delay-1">
+          <div class="kpi-number" data-target="50" data-suffix="%">0</div>
+          <p>Menos agua en procesamiento de alimentos post-cosecha.</p>
+        </div>
+        <div class="kpi-card premium-glass scroll-reveal delay-2">
+          <div class="kpi-number" data-target="40" data-suffix="%">0</div>
+          <p>Más producción de petróleo sin químicos añadidos.</p>
+        </div>
+        <div class="kpi-card premium-glass scroll-reveal">
+          <div class="kpi-number"><span data-target="550" data-suffix="">0</span><sup>+</sup></div>
+          <p>Cuerpos de agua tratados y restaurados sin químicos.</p>
+        </div>
+        <div class="kpi-card premium-glass scroll-reveal delay-1">
+          <div class="kpi-number" data-target="15" data-suffix="%">0</div>
+          <p>Aumento promedio en rendimiento de cultivos.</p>
+        </div>
+        <div class="kpi-card premium-glass scroll-reveal delay-2">
+          <div class="kpi-number"><span data-target="20" data-suffix="k">0</span></div>
+          <p>Toneladas de CO₂ reducidas en acuicultura.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- APLICACIONES (Hero secundario) -->
+    <section class="section">
+      <div class="app-showcase scroll-reveal">
+        <div class="app-image-wrapper premium-glass">
+          <img src="./images/water_hands.png" alt="Manos sosteniendo agua pura con nanoburbujas" class="app-hero-img">
+          <div class="glass-overlay"></div>
+          <div class="floating-tag premium-glass tag-1">
+            <span class="tag-dot"></span> Agua tratada en tiempo real
+          </div>
+          <div class="floating-tag premium-glass tag-2">
+            <span class="tag-dot tag-green"></span> 0 químicos añadidos
+          </div>
+        </div>
+        <div class="app-text-content">
+          <div class="badge">Soluciones plug &amp; play</div>
+          <h2>Transformando industrias <span class="text-gradient">a nivel global</span></h2>
+          <p>Desde la acuicultura hasta el tratamiento de aguas residuales municipales, nuestras soluciones se integran en infraestructuras existentes sin interrumpir las operaciones.</p>
+
+          <div class="industry-list">
+            <div class="industry-item premium-glass">
+              <div class="industry-icon">💧</div>
+              <div>
+                <h4>Agua Superficial</h4>
+                <p>Eliminación de algas, olores y restauración natural de lagos y embalses.</p>
+              </div>
+            </div>
+            <div class="industry-item premium-glass">
+              <div class="industry-icon">🏭</div>
+              <div>
+                <h4>Aguas Residuales</h4>
+                <p>Tratamiento eficiente para plantas industriales y municipales sin químicos.</p>
+              </div>
+            </div>
+            <div class="industry-item premium-glass">
+              <div class="industry-icon">🐟</div>
+              <div>
+                <h4>Acuicultura</h4>
+                <p>Prevención de hipoxia y mejora en la tasa de conversión alimenticia.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INDUSTRIAS -->
+    <section id="industrias" class="section">
+      <div class="section-header scroll-reveal">
+        <div class="badge">Sectores que apoyamos</div>
+        <h2>Una tecnología, <span class="text-gradient">infinitas aplicaciones</span></h2>
+      </div>
+
+      <div class="industry-grid">
+        <article class="industry-card premium-glass scroll-reveal">
+          <div class="industry-card-icon">🐟</div>
+          <h3>Acuicultura</h3>
+          <p>Mejora el bienestar de los peces, la calidad del agua y reduce costes de oxígeno hasta un <b>60%</b>.</p>
+          <span class="industry-card-link">Explorar →</span>
+        </article>
+        <article class="industry-card premium-glass scroll-reveal delay-1">
+          <div class="industry-card-icon">🌱</div>
+          <h3>Agricultura</h3>
+          <p>Aumenta la producción más de un <b>10%</b> reduciendo agua, fertilizantes y químicos.</p>
+          <span class="industry-card-link">Explorar →</span>
+        </article>
+        <article class="industry-card premium-glass scroll-reveal delay-2">
+          <div class="industry-card-icon">🏞️</div>
+          <h3>Lagos &amp; Lagunas</h3>
+          <p>Acelera la recuperación natural de cuerpos de agua sin uso de químicos.</p>
+          <span class="industry-card-link">Explorar →</span>
+        </article>
+        <article class="industry-card premium-glass scroll-reveal">
+          <div class="industry-card-icon">⛽</div>
+          <h3>Recursos Naturales</h3>
+          <p>Mejora la separación y aumenta la producción de petróleo en pozos más de un <b>40%</b>.</p>
+          <span class="industry-card-link">Explorar →</span>
+        </article>
+        <article class="industry-card premium-glass scroll-reveal delay-1">
+          <div class="industry-card-icon">🥩</div>
+          <h3>Alimentos &amp; Bebidas</h3>
+          <p>Mejora la higiene alimentaria y el control de patógenos en líneas de producción.</p>
+          <span class="industry-card-link">Explorar →</span>
+        </article>
+        <article class="industry-card premium-glass scroll-reveal delay-2">
+          <div class="industry-card-icon">🏭</div>
+          <h3>Industrial</h3>
+          <p>Optimiza procesos de tratamiento, mezclas y reactores en plantas industriales pesadas.</p>
+          <span class="industry-card-link">Explorar →</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section class="section">
+      <div class="section-header scroll-reveal">
+        <div class="badge">Testimonios</div>
+        <h2>Lo que dicen <span class="text-gradient">nuestros clientes</span></h2>
+      </div>
+
+      <div class="testimonial-carousel scroll-reveal">
+        <div class="testimonial-track">
+          <article class="testimonial-card premium-glass">
+            <div class="quote-mark">"</div>
+            <p>El uso de nanoburbujas de oxígeno en cultivos de invernadero ha mejorado la producción en el cultivo de pepino bajo estrés por altas temperaturas. La rentabilidad y eficiencia del agua mejoraron drásticamente.</p>
+            <footer>
+              <strong>Pablo García Raya</strong>
+              <span>Ingeniero Agrónomo · BioSabor, España</span>
+            </footer>
+          </article>
+          <article class="testimonial-card premium-glass">
+            <div class="quote-mark">"</div>
+            <p>Después de solo 3 meses el agua estaba cristalina. Ahora podemos cosechar todo, en lugar del 30% que cosechábamos en verano. La calidad es mejor y los clientes están contentos.</p>
+            <footer>
+              <strong>Richard Smits</strong>
+              <span>Manager · De Kruidenaer, Países Bajos</span>
+            </footer>
+          </article>
+          <article class="testimonial-card premium-glass">
+            <div class="quote-mark">"</div>
+            <p>Con Freya instalado en las jaulas de espera, podemos manejar los peces de manera más segura sin comprometer su bienestar, incluso a altas temperaturas del mar en verano.</p>
+            <footer>
+              <strong>Thomas Godtliebsen</strong>
+              <span>Gerente · SalMar Innovanor, Noruega</span>
+            </footer>
+          </article>
+          <article class="testimonial-card premium-glass">
+            <div class="quote-mark">"</div>
+            <p>Planeamos aumentar la producción en más de 20 millones de libras de queso evitando $10M en mejoras de CAPEX. Recomendamos Moleaer a otros fabricantes de queso sin reservas.</p>
+            <footer>
+              <strong>Larry Harris</strong>
+              <span>Maestro Quesero · Meister Cheese, USA</span>
+            </footer>
+          </article>
+          <article class="testimonial-card premium-glass">
+            <div class="quote-mark">"</div>
+            <p>Instalada en febrero, ya está teniendo un impacto positivo en el lago. Al aumentar los niveles de oxígeno, estamos permitiendo que nuestro lago se sane por sí mismo.</p>
+            <footer>
+              <strong>Steve Manos</strong>
+              <span>Alcalde · Lake Elsinore, USA</span>
+            </footer>
+          </article>
+        </div>
+        <div class="carousel-controls">
+          <button class="car-btn" data-dir="-1" aria-label="Anterior">‹</button>
+          <button class="car-btn" data-dir="1" aria-label="Siguiente">›</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="faq-wrapper">
+        <div class="faq-header scroll-reveal">
+          <div class="badge">FAQ</div>
+          <h2>Respuestas a las<br><span class="text-gradient">preguntas más frecuentes</span></h2>
+          <p>¿Tienes más preguntas? Conecta con un experto de nuestro equipo en menos de 24h.</p>
+          <a href="#contacto" class="btn-ghost btn-large">Hablar con un experto</a>
+        </div>
+        <div class="faq-list scroll-reveal delay-1">
+
+          <details class="faq-item premium-glass" open>
+            <summary>
+              <span>¿Qué son las nanoburbujas exactamente?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-content">
+              <p>Burbujas de gas con un diámetro inferior a 200 nanómetros — aproximadamente 2.500 veces más pequeñas que un grano de sal. Por su tamaño, no flotan: permanecen suspendidas durante semanas y aportan oxígeno o cualquier gas directamente donde el proceso lo necesita.</p>
+            </div>
+          </details>
+
+          <details class="faq-item premium-glass">
+            <summary>
+              <span>¿Cuánto tiempo lleva Moleaer en el mercado?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-content">
+              <p>Moleaer fue fundada en 2016 por Warren Russell y Bruce Scholten. Desde entonces somos el líder global en tecnología de nanoburbujas con instalaciones en más de 50 países.</p>
+            </div>
+          </details>
+
+          <details class="faq-item premium-glass">
+            <summary>
+              <span>¿Cuáles son sus propiedades físicas únicas?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-content">
+              <p>Superficie fuertemente cargada negativamente, capacidad de separar partículas, liberación de radicales hidroxilo que destruyen contaminantes, y flotabilidad neutra que las mantiene suspendidas durante semanas.</p>
+            </div>
+          </details>
+
+          <details class="faq-item premium-glass">
+            <summary>
+              <span>¿Existe opción de alquiler (NaaS)?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-content">
+              <p>Sí. Nuestro servicio <b>Nanobubbles-as-a-Service</b> permite alquileres modulares y flexibles entre 2 y 200 m³/h, ideales para demandas estacionales o pruebas piloto.</p>
+            </div>
+          </details>
+
+          <details class="faq-item premium-glass">
+            <summary>
+              <span>¿Por qué mejora el crecimiento vegetal?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-content">
+              <p>Las nanoburbujas de oxígeno sobre-saturan el agua de riego con oxígeno disuelto que llega hasta la zona radicular. Esto optimiza la respiración celular y la absorción de nutrientes, además de suprimir patógenos y biofilm.</p>
+            </div>
+          </details>
+
+          <details class="faq-item premium-glass">
+            <summary>
+              <span>¿Hay soporte técnico disponible?</span>
+              <span class="faq-icon">+</span>
+            </summary>
+            <div class="faq-content">
+              <p>Contamos con la red de soporte más amplia del sector. Servicio técnico local en 50+ países e ingenieros especializados por industria. Disponible vía portal, email o WhatsApp Business.</p>
+            </div>
+          </details>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto" class="section">
+      <div class="contact-block premium-glass scroll-reveal">
+        <div class="contact-left">
+          <div class="badge">Ponte en contacto</div>
+          <h2>Diseñemos juntos<br><span class="text-gradient">tu solución de nanoburbujas</span></h2>
+          <p>Nuestros ingenieros estudiarán tu caso y te presentarán una solución a medida en menos de 48h.</p>
+          <ul class="contact-perks">
+            <li><span>✓</span> Evaluación gratuita por industria</li>
+            <li><span>✓</span> Plan piloto NaaS disponible</li>
+            <li><span>✓</span> Soporte técnico local 24/7</li>
+          </ul>
+          <div class="contact-channels">
+            <a href="#" class="btn-ghost btn-whatsapp">
+              <span class="wa-icon">W</span> WhatsApp Business
+            </a>
+            <span class="contact-phone">+34 950 062 953</span>
+          </div>
+        </div>
+        <form class="contact-form premium-glass" onsubmit="event.preventDefault(); this.querySelector('.form-success').classList.add('show'); setTimeout(()=>this.querySelector('.form-success').classList.remove('show'),3000);">
+          <h3>Solicita tu evaluación</h3>
+          <div class="form-row">
+            <label>Nombre<input type="text" placeholder="Ej. Pablo García" required></label>
+            <label>Empresa<input type="text" placeholder="Tu organización" required></label>
+          </div>
+          <div class="form-row">
+            <label>Email<input type="email" placeholder="tu@email.com" required></label>
+            <label>Sector
+              <select required>
+                <option value="">Selecciona...</option>
+                <option>Acuicultura</option>
+                <option>Agricultura</option>
+                <option>Lagos y lagunas</option>
+                <option>Aguas residuales</option>
+                <option>Alimentos y bebidas</option>
+                <option>Industrial</option>
+              </select>
+            </label>
+          </div>
+          <label class="full">Describe tu reto
+            <textarea rows="3" placeholder="Cuéntanos sobre tu instalación, volúmenes, objetivos..."></textarea>
+          </label>
+          <button type="submit" class="btn-pill btn-large">Enviar consulta</button>
+          <div class="form-success">✓ ¡Gracias! Un experto te contactará en 24h.</div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="corporate-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="nav-logo" aria-label="Moleaer">
+          <img src="./images/moleaer-logo.png" alt="Moleaer — Advancing Nanobubble Technology" class="brand-logo brand-logo-footer" />
+        </a>
+        <p>La compañía líder mundial en tecnología industrial de nanoburbujas. Ciencia respaldada por datos. Resultados respaldados por personas.</p>
+        <div class="social-links">
+          <a href="#" class="social-icon" aria-label="LinkedIn">in</a>
+          <a href="#" class="social-icon" aria-label="X">𝕏</a>
+          <a href="#" class="social-icon" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+      <div class="footer-links-col">
+        <h4>Soluciones</h4>
+        <a href="#">Agricultura</a>
+        <a href="#">Acuicultura</a>
+        <a href="#">Aguas Superficiales</a>
+        <a href="#">Aguas Residuales</a>
+        <a href="#">Alimentos &amp; Bebidas</a>
+      </div>
+      <div class="footer-links-col">
+        <h4>Compañía</h4>
+        <a href="#">Sobre Nosotros</a>
+        <a href="#">I+D</a>
+        <a href="#">Carreras</a>
+        <a href="#">Noticias</a>
+        <a href="#">Contacto</a>
+      </div>
+      <div class="footer-contact">
+        <h4>Soporte Rápido</h4>
+        <a href="#" class="btn-ghost btn-whatsapp">
+          <span class="wa-icon">W</span> WhatsApp Business
+        </a>
+        <p class="footer-address">3232 El Segundo Blvd<br>Hawthorne, CA 90250 USA</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Moleaer Inc. Todos los derechos reservados.</p>
+      <div class="legal-links">
+        <a href="#">Política de Privacidad</a>
+        <a href="#">Términos de Uso</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp FAB -->
+  <a href="#" class="wa-fab" aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11.8 11.8 0 0 0 2.9 18.7L2 22l3.4-.9A11.9 11.9 0 1 0 20.5 3.5zM12 20.2a8.3 8.3 0 0 1-4.2-1.1l-.3-.2-2 .5.5-1.9-.2-.3A8.3 8.3 0 1 1 12 20.2zm4.6-6.2c-.3-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.2-.3 0-.4.1-.6l.4-.4.2-.4a.5.5 0 0 0 0-.4c0-.1-.6-1.4-.8-1.9s-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-1 2.2 5.3 5.3 0 0 0 1.1 2.7 12.1 12.1 0 0 0 4.6 4 5.4 5.4 0 0 0 2.5.5 2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .2-1.2c-.1-.2-.3-.2-.6-.4z"/></svg>
+  </a>
+
+  <script src="./main.js"></script>
+</body>
+</html>
