@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 /**
  * Reprocesa el PNG oficial como en _legacy/main.js:
@@ -49,7 +49,9 @@ function processBrandLogo(img: HTMLImageElement) {
     ctx.putImageData(data, 0, 0);
     img.src = canvas.toDataURL('image/png');
   } catch (e) {
-    console.warn('Logo processing fallback:', e);
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Logo processing fallback:', e);
+    }
   }
 }
 
@@ -62,7 +64,7 @@ type Props = {
   priority?: boolean;
 };
 
-export function BrandLogo({ variant, compact = false, className = '', alt = 'Moleaer', priority }: Props) {
+function BrandLogoInner({ variant, compact = false, className = '', alt = 'Moleaer', priority }: Props) {
   const ref = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState(false);
 
@@ -106,11 +108,13 @@ export function BrandLogo({ variant, compact = false, className = '', alt = 'Mol
       ref={ref}
       src="/images/moleaer-logo.png"
       alt={alt}
-      width={variant === 'footer' ? 420 : 304}
-      height={variant === 'footer' ? 120 : 80}
+      width={variant === 'footer' ? 420 : 328}
+      height={variant === 'footer' ? 120 : 86}
       className={`${base} ${ready ? 'ready' : ''} ${className}`.trim()}
       decoding="async"
       {...(priority ? { fetchPriority: 'high' as const } : { loading: 'lazy' as const })}
     />
   );
 }
+
+export const BrandLogo = memo(BrandLogoInner);

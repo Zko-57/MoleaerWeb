@@ -63,10 +63,25 @@ export function TestimonialCarousel() {
   }, [measure, gw]);
 
   useEffect(() => {
-    const ro = () => setGw(window.innerWidth);
-    ro();
-    window.addEventListener('resize', ro, { passive: true });
-    return () => window.removeEventListener('resize', ro);
+    let rafId = 0;
+    let lastW = typeof window !== 'undefined' ? window.innerWidth : 0;
+    const onResize = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const w = window.innerWidth;
+        if (w !== lastW) {
+          lastW = w;
+          setGw(w);
+        }
+      });
+    };
+    onResize();
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
@@ -93,7 +108,9 @@ export function TestimonialCarousel() {
             data-card
             className="glass-strong flex w-[calc(100vw-2.5rem)] shrink-0 flex-col gap-4 p-9 sm:w-[calc(50vw-2rem)] lg:w-[calc((100vw-4rem)/3-0.5rem)] lg:max-w-[calc(416px)]"
           >
-            <div className="font-display text-2xl leading-none text-cyan-light/80">"</div>
+            <div className="font-display text-2xl leading-none text-cyan-light/80" aria-hidden>
+              {'\u201C'}
+            </div>
             <p className="text-[0.98rem] leading-relaxed text-zinc-300">{q.text}</p>
             <footer className="mt-auto border-t border-white/10 pt-4 text-sm">
               <strong className="text-white">{q.name}</strong>

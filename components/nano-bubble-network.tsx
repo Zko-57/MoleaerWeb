@@ -54,9 +54,9 @@ function buildNetwork(count: number, neighbors: number) {
     return {
       x: snap(Math.min(94, Math.max(6, x))),
       y: snap(Math.min(92, Math.max(8, y))),
-      r: snap(0.16 + rnd(i, 3) * 0.34, 4),
+      r: snap(0.2 + rnd(i, 3) * 0.42, 4),
       delay: snap(-rnd(i, 4) * 14, 3),
-      dur: snap(9 + rnd(i, 5) * 10, 3),
+      dur: snap(7.5 + rnd(i, 5) * 9.5, 3),
     };
   });
 

@@ -16,6 +16,6 @@ npm-debug.log*
 .vercel
 
 # typescript
-next-env.d.ts
+# next-env.d.ts se versiona (tipos del proyecto Next)
 
 # _legacy/ — sitio estático anterior (Vite/Node); excluido en tsconfig, no afecta el build de Next

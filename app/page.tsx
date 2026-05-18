@@ -9,19 +9,8 @@ import { ContactForm } from '@/components/contact-form';
 import { Reveal, RevealStagger } from '@/components/ui/reveal';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { FaqDetails } from '@/components/faq-details';
+import { NanoBubbleNetworkLoader } from '@/components/nano-bubble-network-loader';
 import { navSectionClass } from '@/lib/nav-section';
-
-const NanoBubbleNetwork = dynamic(
-  () => import('@/components/nano-bubble-network').then((m) => ({ default: m.NanoBubbleNetwork })),
-  {
-    loading: () => (
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#001428]/95 to-[#000a14]/95"
-        aria-hidden
-      />
-    ),
-  },
-);
 
 const TestimonialCarousel = dynamic(
   () => import('@/components/testimonial-carousel').then((m) => ({ default: m.TestimonialCarousel })),
@@ -58,7 +47,7 @@ function SectionHeader({
   return (
     <div className="mx-auto mb-12 max-w-3xl space-y-5 text-center lg:mb-16">
       <Reveal>
-        <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-400">
+        <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-300">
           {badge}
         </div>
       </Reveal>
@@ -240,7 +229,7 @@ export default function HomePage() {
               <h3 className="font-display mt-2 text-xl font-bold text-white">Nanoburbujas</h3>
             </div>
             <div className="relative min-h-[220px] overflow-hidden bg-gradient-to-b from-[#001428]/95 to-[#000a14]/95">
-              <NanoBubbleNetwork />
+              <NanoBubbleNetworkLoader />
             </div>
             <ul className="space-y-3 p-6 text-sm text-zinc-200">
               <li className="flex gap-2">
@@ -337,7 +326,7 @@ export default function HomePage() {
 
           <div className="space-y-8">
             <Reveal>
-              <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-400">
+              <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-300">
                 Soluciones plug & play
               </div>
             </Reveal>
@@ -393,45 +382,44 @@ export default function HomePage() {
           <RevealStagger
             className="col-span-full grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
             stagger={0.05}
-            children={[
-              <IndustryCard
-                key="e0"
-                icon="🐟"
-                title="Acuicultura"
-                desc="Mejora el bienestar de los peces, la calidad del agua y reduce costes de oxígeno hasta un 60%."
-              />,
-              <IndustryCard
-                key="e1"
-                icon="🌱"
-                title="Agricultura"
-                desc="Aumenta la producción más de un 10% reduciendo agua, fertilizantes y químicos."
-              />,
-              <IndustryCard
-                key="e2"
-                icon="🏞️"
-                title="Lagos & Lagunas"
-                desc="Acelera la recuperación natural de cuerpos de agua sin uso de químicos."
-              />,
-              <IndustryCard
-                key="e3"
-                icon="⛽"
-                title="Recursos Naturales"
-                desc="Mejora la separación y aumenta la producción de petróleo en pozos más de un 40%."
-              />,
-              <IndustryCard
-                key="e4"
-                icon="🥩"
-                title="Alimentos & Bebidas"
-                desc="Mejora la higiene alimentaria y el control de patógenos en líneas de producción."
-              />,
-              <IndustryCard
-                key="e5"
-                icon="🏭"
-                title="Industrial"
-                desc="Optimiza procesos de tratamiento, mezclas y reactores en plantas industriales pesadas."
-              />,
-            ]}
-          />
+          >
+            <IndustryCard
+              key="e0"
+              icon="🐟"
+              title="Acuicultura"
+              desc="Mejora el bienestar de los peces, la calidad del agua y reduce costes de oxígeno hasta un 60%."
+            />
+            <IndustryCard
+              key="e1"
+              icon="🌱"
+              title="Agricultura"
+              desc="Aumenta la producción más de un 10% reduciendo agua, fertilizantes y químicos."
+            />
+            <IndustryCard
+              key="e2"
+              icon="🏞️"
+              title="Lagos & Lagunas"
+              desc="Acelera la recuperación natural de cuerpos de agua sin uso de químicos."
+            />
+            <IndustryCard
+              key="e3"
+              icon="⛽"
+              title="Recursos Naturales"
+              desc="Mejora la separación y aumenta la producción de petróleo en pozos más de un 40%."
+            />
+            <IndustryCard
+              key="e4"
+              icon="🥩"
+              title="Alimentos & Bebidas"
+              desc="Mejora la higiene alimentaria y el control de patógenos en líneas de producción."
+            />
+            <IndustryCard
+              key="e5"
+              icon="🏭"
+              title="Industrial"
+              desc="Optimiza procesos de tratamiento, mezclas y reactores en plantas industriales pesadas."
+            />
+          </RevealStagger>
         </div>
       </section>
 
@@ -457,7 +445,7 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-[1120px] gap-12 lg:grid-cols-12">
           <div className="space-y-6 lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
             <Reveal>
-              <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-400">
+              <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-300">
                 FAQ
               </div>
             </Reveal>
@@ -531,7 +519,7 @@ export default function HomePage() {
       <section id="contacto" className={`${navSectionClass} pb-[calc(var(--section-y)+3rem)]`}>
         <Reveal className="mx-auto grid max-w-[1320px] gap-10 lg:grid-cols-2 lg:gap-14">
           <div className="space-y-6">
-            <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-400">
+            <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-300">
               Ponte en contacto
             </div>
             <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
