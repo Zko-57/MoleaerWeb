@@ -23,9 +23,12 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative mx-auto flex max-w-[1320px] flex-col gap-12 px-5 pb-[var(--section-y)] pt-28 sm:px-8 lg:flex-row lg:items-center lg:gap-16 lg:pt-32"
+      className="relative mx-auto flex max-w-[1320px] flex-col gap-10 px-5 pb-[var(--section-y)] pt-24 sm:px-8 sm:pt-28 lg:flex-row lg:items-start lg:gap-14 lg:pt-32"
     >
-      <m.div className="flex-1 space-y-8" style={mounted ? { y: contentY } : undefined}>
+      <m.div
+        className="flex-1 space-y-6 pt-2 sm:space-y-7 sm:pt-3 lg:pt-0 lg:-mt-4 xl:-mt-5"
+        style={mounted ? { y: contentY } : undefined}
+      >
         <Reveal>
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-zinc-300">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan-light shadow-[0_0_8px_rgba(0,224,255,0.85)]" />
@@ -83,7 +86,7 @@ export function Hero() {
       </m.div>
 
       <m.div
-        className="relative flex flex-1 flex-col items-center justify-center gap-6 lg:max-w-[min(520px,46vw)]"
+        className="relative flex flex-1 flex-col items-center justify-center gap-6 lg:max-w-[min(520px,46vw)] lg:pt-2"
         style={mounted ? { y: visualY, scale: visualScale } : undefined}
       >
         <Reveal delay={0.12} className="relative w-full max-w-md lg:max-w-none">

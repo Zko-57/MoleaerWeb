@@ -9,6 +9,7 @@ import { ContactForm } from '@/components/contact-form';
 import { Reveal, RevealStagger } from '@/components/ui/reveal';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { FaqDetails } from '@/components/faq-details';
+import { navSectionClass } from '@/lib/nav-section';
 
 const NanoBubbleNetwork = dynamic(
   () => import('@/components/nano-bubble-network').then((m) => ({ default: m.NanoBubbleNetwork })),
@@ -102,7 +103,7 @@ export default function HomePage() {
       </section>
 
       {/* Technology */}
-      <section id="tecnologia" className="scroll-mt-28 px-5 py-[var(--section-y)] sm:px-8">
+      <section id="tecnologia" className={navSectionClass}>
         <SectionHeader
           badge="Tecnología patentada"
           title={
@@ -195,7 +196,7 @@ export default function HomePage() {
       </section>
 
       {/* Nanoburbujas compare */}
-      <section id="nanoburbujas" className="scroll-mt-28 px-5 py-[var(--section-y)] sm:px-8">
+      <section id="nanoburbujas" className={navSectionClass}>
         <SectionHeader
           badge="¿Qué son las nanoburbujas?"
           title={
@@ -257,10 +258,7 @@ export default function HomePage() {
       </section>
 
       {/* Impact case — sin bloque sólido al final: el fondo sigue siendo el ambient fijo */}
-      <section
-        id="impacto"
-        className="scroll-mt-28 px-5 py-[var(--section-y)] sm:px-8"
-      >
+      <section id="impacto" className={navSectionClass}>
         <div className="mx-auto max-w-[1320px]">
           <ComparisonSection />
         </div>
@@ -378,7 +376,7 @@ export default function HomePage() {
       </section>
 
       {/* Industries */}
-      <section id="industrias" className="scroll-mt-28 px-5 py-[var(--section-y)] sm:px-8">
+      <section id="industrias" className={navSectionClass}>
         <SectionHeader
           badge="Sectores que apoyamos"
           title={
@@ -455,7 +453,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="scroll-mt-28 px-5 py-[var(--section-y)] sm:px-8">
+      <section id="faq" className={navSectionClass}>
         <div className="mx-auto grid max-w-[1120px] gap-12 lg:grid-cols-12">
           <div className="space-y-6 lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
             <Reveal>
@@ -530,7 +528,7 @@ export default function HomePage() {
       </section>
 
       {/* Contact */}
-      <section id="contacto" className="scroll-mt-28 px-5 pb-[calc(var(--section-y)+3rem)] pt-[var(--section-y)] sm:px-8">
+      <section id="contacto" className={`${navSectionClass} pb-[calc(var(--section-y)+3rem)]`}>
         <Reveal className="mx-auto grid max-w-[1320px] gap-10 lg:grid-cols-2 lg:gap-14">
           <div className="space-y-6">
             <div className="inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-zinc-400">
