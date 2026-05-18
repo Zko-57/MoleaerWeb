@@ -74,10 +74,10 @@ export function ComparisonSection() {
           </button>
           <button
             type="button"
-            className={`rounded-full border px-5 py-2 text-sm font-semibold shadow-[0_0_18px_rgba(0,224,255,0.35)] transition-[transform,opacity] ${
+            className={`rounded-full border px-5 py-2 text-sm font-semibold transition-[transform,opacity,box-shadow,border-color,background-color,color] ${
               focus === 'good'
-                ? 'border-cyan-light bg-cyan-950/40 text-cyan-100'
-                : 'border-cyan-light/50 bg-black/50 text-white hover:bg-black/65'
+                ? 'border-cyan-light bg-cyan-950/40 text-cyan-100 shadow-[0_0_18px_rgba(0,224,255,0.35)]'
+                : 'border-white/25 bg-black/50 text-white/90 hover:bg-black/65'
             }`}
             onClick={() => setFocus((f) => (f === 'good' ? 'none' : 'good'))}
           >

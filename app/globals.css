@@ -433,21 +433,39 @@
   }
 }
 
-/* Comparison zoom */
+/* Comparison zoom — ancla en zona de raíces: izq. (sin Moleaer) / dcha. (con Moleaer) */
+.comparison-zoom {
+  @apply isolate;
+}
 .comparison-zoom img {
-  @apply h-full w-full object-cover transition-transform duration-700 ease-out;
-  transform: translate3d(0, 0, 0) scale(1);
+  @apply h-full w-full object-cover;
+  transform: scale(1);
+  transform-origin: 50% 78%;
+  transition:
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform-origin 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .comparison-root[data-focus='bad'] .comparison-zoom img {
-  transform: translate3d(8%, 0, 0) scale(1.65);
+  transform: scale(1.82);
+  transform-origin: 28% 88%;
 }
 .comparison-root[data-focus='good'] .comparison-zoom img {
-  transform: translate3d(-6%, 0, 0) scale(1.55);
+  transform: scale(1.82);
+  transform-origin: 72% 88%;
 }
 @media (max-width: 900px) {
-  .comparison-root[data-focus='bad'] .comparison-zoom img,
+  .comparison-root[data-focus='bad'] .comparison-zoom img {
+    transform: scale(1.38);
+    transform-origin: 30% 86%;
+  }
   .comparison-root[data-focus='good'] .comparison-zoom img {
-    transform: translate3d(0, 0, 0) scale(1.12);
+    transform: scale(1.38);
+    transform-origin: 70% 86%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .comparison-zoom img {
+    transition-duration: 0.01ms;
   }
 }
 
