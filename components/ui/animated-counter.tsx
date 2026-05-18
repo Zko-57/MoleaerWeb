@@ -13,7 +13,7 @@ export function AnimatedCounter({ target, suffix = '', className }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const reduce = useReducedMotion();
-  const [val, setVal] = useState(reduce ? target : 0);
+  const [val, setVal] = useState(0);
   const done = useRef(false);
 
   useEffect(() => {

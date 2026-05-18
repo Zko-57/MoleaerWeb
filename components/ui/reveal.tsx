@@ -2,6 +2,7 @@
 
 import { m, useReducedMotion } from 'framer-motion';
 import type { ReactNode } from 'react';
+import { useMounted } from '@/hooks/use-mounted';
 
 type Props = {
   children: ReactNode;
@@ -11,13 +12,19 @@ type Props = {
 };
 
 export function Reveal({ children, className = '', delay = 0, y = 28 }: Props) {
+  const mounted = useMounted();
   const reduce = useReducedMotion();
+  const animate = mounted && !reduce;
+
+  if (!animate) {
+    return <m.div className={className}>{children}</m.div>;
+  }
 
   return (
     <m.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y }}
-      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      initial={{ y }}
+      whileInView={{ y: 0 }}
       viewport={{ once: true, margin: '-80px', amount: 0.15 }}
       transition={{
         duration: 0.55,
@@ -39,7 +46,14 @@ export function RevealStagger({
   className?: string;
   stagger?: number;
 }) {
+  const mounted = useMounted();
   const reduce = useReducedMotion();
+  const animate = mounted && !reduce;
+
+  if (!animate) {
+    return <m.div className={className}>{children}</m.div>;
+  }
+
   return (
     <m.div
       className={className}
@@ -49,9 +63,7 @@ export function RevealStagger({
       variants={{
         hidden: {},
         show: {
-          transition: reduce
-            ? { staggerChildren: 0 }
-            : { staggerChildren: stagger, delayChildren: 0.05 },
+          transition: { staggerChildren: stagger, delayChildren: 0.05 },
         },
       }}
     >
@@ -59,8 +71,8 @@ export function RevealStagger({
         <m.div
           key={i}
           variants={{
-            hidden: reduce ? {} : { opacity: 0, y: 22 },
-            show: reduce ? {} : { opacity: 1, y: 0 },
+            hidden: { y: 22 },
+            show: { y: 0 },
           }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >

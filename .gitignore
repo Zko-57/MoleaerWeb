@@ -18,5 +18,4 @@ npm-debug.log*
 # typescript
 next-env.d.ts
 
-# legacy backup
-# _legacy kept intentionally for reference
+# _legacy/ — sitio estático anterior (Vite/Node); excluido en tsconfig, no afecta el build de Next

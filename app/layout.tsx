@@ -41,7 +41,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${inter.variable} ${space.variable}`}>
+    <html lang="es" className={`${inter.variable} ${space.variable}`} suppressHydrationWarning>
       <body className="min-h-screen font-sans">
         <MotionProvider>
           <AmbientBackground />

@@ -5,24 +5,27 @@ import Link from 'next/link';
 import { useRef, type ReactNode } from 'react';
 import { m, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Reveal } from '@/components/ui/reveal';
+import { useMounted } from '@/hooks/use-mounted';
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const mounted = useMounted();
   const reduce = useReducedMotion();
+  const parallax = mounted && !reduce;
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
   });
-  const contentY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [0, 36]);
-  const visualY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [0, -24]);
-  const visualScale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [1, 1.02]);
+  const contentY = useTransform(scrollYProgress, [0, 1], parallax ? [0, 36] : [0, 0]);
+  const visualY = useTransform(scrollYProgress, [0, 1], parallax ? [0, -24] : [0, 0]);
+  const visualScale = useTransform(scrollYProgress, [0, 1], parallax ? [1, 1.02] : [1, 1]);
 
   return (
     <section
       ref={sectionRef}
       className="relative mx-auto flex max-w-[1320px] flex-col gap-12 px-5 pb-[var(--section-y)] pt-28 sm:px-8 lg:flex-row lg:items-center lg:gap-16 lg:pt-32"
     >
-      <m.div className="flex-1 space-y-8" style={{ y: contentY }}>
+      <m.div className="flex-1 space-y-8" style={mounted ? { y: contentY } : undefined}>
         <Reveal>
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-zinc-300">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan-light shadow-[0_0_8px_rgba(0,224,255,0.85)]" />
@@ -81,7 +84,7 @@ export function Hero() {
 
       <m.div
         className="relative flex flex-1 flex-col items-center justify-center gap-6 lg:max-w-[min(520px,46vw)]"
-        style={{ y: visualY, scale: visualScale }}
+        style={mounted ? { y: visualY, scale: visualScale } : undefined}
       >
         <Reveal delay={0.12} className="relative w-full max-w-md lg:max-w-none">
           <div className="glass relative aspect-square overflow-hidden rounded-[2rem] p-2 sm:rounded-[2.25rem]">
@@ -124,17 +127,20 @@ export function Hero() {
 }
 
 function RevealStaggerRow({ items }: { items: ReactNode[] }) {
+  const mounted = useMounted();
   const reduce = useReducedMotion();
+  const animate = mounted && !reduce;
+
   return (
     <m.div
       className="flex flex-wrap gap-4"
-      initial="hidden"
-      whileInView="show"
+      initial={false}
+      whileInView={animate ? 'show' : undefined}
       viewport={{ once: true, margin: '-60px' }}
       variants={{
         hidden: {},
         show: {
-          transition: reduce ? {} : { staggerChildren: 0.07, delayChildren: 0.14 },
+          transition: { staggerChildren: 0.07, delayChildren: 0.14 },
         },
       }}
     >
@@ -142,8 +148,8 @@ function RevealStaggerRow({ items }: { items: ReactNode[] }) {
         <m.div
           key={i}
           variants={{
-            hidden: reduce ? {} : { opacity: 0, y: 16 },
-            show: reduce ? {} : { opacity: 1, y: 0 },
+            hidden: { y: 16 },
+            show: { y: 0 },
           }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >

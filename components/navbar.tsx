@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { BrandLogo } from '@/components/brand-logo';
 import { m, useReducedMotion } from 'framer-motion';
+import { useMounted } from '@/hooks/use-mounted';
 
 const NAV = [
   { href: '#tecnologia', label: 'Tecnología' },
@@ -14,6 +15,7 @@ const NAV = [
 ];
 
 export function Navbar() {
+  const mounted = useMounted();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>('#tecnologia');
@@ -78,14 +80,14 @@ export function Navbar() {
     <m.header
       initial={false}
       animate={{
-        backgroundColor: scrolled ? 'rgba(5, 24, 54, 0.72)' : 'rgba(5, 24, 54, 0.35)',
+        backgroundColor: mounted && scrolled ? 'rgba(5, 24, 54, 0.72)' : 'rgba(5, 24, 54, 0.35)',
       }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="glass fixed left-1/2 top-4 z-[1000] flex h-[4.25rem] w-[calc(100%-1.5rem)] max-w-[1320px] -translate-x-1/2 flex-col rounded-full px-2 sm:top-5 sm:w-[calc(100%-2.5rem)]"
     >
       <div className="flex h-full w-full items-center justify-between gap-3 px-3 pl-4 sm:px-5">
         <Link href="#top" className="nav-logo shrink-0" aria-label="Moleaer — Inicio">
-          <BrandLogo variant="nav" compact={scrolled} priority alt="Moleaer" />
+          <BrandLogo variant="nav" compact={mounted && scrolled} priority alt="Moleaer" />
         </Link>
 
         <nav

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { m } from 'framer-motion';
+import { useMounted } from '@/hooks/use-mounted';
 
 const QUOTES = [
   {
@@ -38,6 +39,7 @@ function visibleCount(w: number) {
 }
 
 export function TestimonialCarousel() {
+  const mounted = useMounted();
   const trackRef = useRef<HTMLDivElement>(null);
   const [i, setI] = useState(0);
   const [gw, setGw] = useState(1200);
@@ -82,7 +84,7 @@ export function TestimonialCarousel() {
       <m.div
         ref={trackRef}
         className="flex gap-6"
-        animate={{ x: -translate }}
+        animate={mounted ? { x: -translate } : false}
         transition={{ type: 'spring', stiffness: 280, damping: 34 }}
       >
         {QUOTES.map((q, k) => (
