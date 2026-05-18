@@ -68,18 +68,25 @@ export function Navbar() {
   const reduceMotion = useReducedMotion();
   const suppressActiveUntil = useRef(0);
 
-  /** Un solo listener + rAF: menos trabajo por evento de scroll y setState solo si cambia el umbral. */
+  /**
+   * Histéresis: al volver al inicio la barra se agranda antes (evita que parezca
+   * que “llega tarde” tras scroll suave). Al bajar, sigue compactándose cerca del umbral original.
+   */
+  const NAV_COMPACT_SHRINK_BELOW = 56;
+  const NAV_EXPAND_BEFORE_TOP = 115;
+
+  /** Un solo listener + rAF: menos trabajo por evento de scroll. */
   useEffect(() => {
     let rafId = 0;
-    let prevScrolled: boolean | null = null;
     const tick = () => {
       rafId = 0;
       const y = window.scrollY;
-      const nextScrolled = y > 48;
-      if (nextScrolled !== prevScrolled) {
-        prevScrolled = nextScrolled;
-        setScrolled(nextScrolled);
-      }
+      setScrolled((compact) => {
+        if (y <= 48) return false;
+        if (compact && y < NAV_EXPAND_BEFORE_TOP) return false;
+        if (!compact && y > NAV_COMPACT_SHRINK_BELOW) return true;
+        return compact;
+      });
       if (performance.now() >= suppressActiveUntil.current && y < 120) {
         setActive((a) => (a ? '' : a));
       }

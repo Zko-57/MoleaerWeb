@@ -548,7 +548,12 @@ export default function HomePage() {
               >
                 <span className="text-emerald-400">W</span> WhatsApp Business
               </Link>
-              <span className="text-sm text-zinc-500">+34 950 062 953</span>
+              <span
+                className="text-sm font-semibold tabular-nums tracking-tight text-cyan-light [text-shadow:0_0_14px_rgba(96,224,255,0.45)] motion-reduce:[text-shadow:none]"
+                translate="no"
+              >
+                +34 950 062 953
+              </span>
             </div>
           </div>
           <ContactForm />

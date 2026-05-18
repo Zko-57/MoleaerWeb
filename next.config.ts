@@ -3,10 +3,25 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  compress: true,
+  /** Menos trabajo en main thread en prod (los warn de logo ya están acotados a dev). */
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
+  },
+  /**
+   * Importaciones más granulares desde el barrel de framer-motion → menos JS en el cliente.
+   * @see https://nextjs.org/docs/app/api-reference/config/next-config-js/optimizePackageImports
+   */
+  experimental: {
+    optimizePackageImports: ['framer-motion'],
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [32, 48, 64, 96, 128, 256],
+    /** Mejor acierto en caché CDN del optimizador de imágenes (Vercel). */
+    minimumCacheTTL: 31536000,
   },
   async headers() {
     return [
