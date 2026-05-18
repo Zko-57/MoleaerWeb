@@ -5,19 +5,30 @@ import { memo, useEffect, useRef, useState } from 'react';
 /**
  * Reprocesa el PNG oficial como en _legacy/main.js:
  * fondo blanco/claro → transparente, texto navy → cyan, esfera más viva.
+ * Dibuja a resolución mayor (devicePixelRatio) para Retina: el PNG 235×67 no basta en pantallas 2x.
  */
 function processBrandLogo(img: HTMLImageElement) {
-  const canvas = document.createElement('canvas');
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return;
-  canvas.width = w;
-  canvas.height = h;
+
+  /** Cap 2×: encima el coste de getImageData crece ~DPR² con poca ganancia visual en logo pequeño. */
+  const dpr =
+    typeof window !== 'undefined' ? Math.min(2, Math.max(1, window.devicePixelRatio || 1)) : 1;
+  const tw = Math.max(1, Math.round(w * dpr));
+  const th = Math.max(1, Math.round(h * dpr));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = tw;
+  canvas.height = th;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
   try {
-    ctx.drawImage(img, 0, 0);
-    const data = ctx.getImageData(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, tw, th);
+    const data = ctx.getImageData(0, 0, tw, th);
     const px = data.data;
 
     for (let i = 0; i < px.length; i += 4) {
@@ -108,8 +119,8 @@ function BrandLogoInner({ variant, compact = false, className = '', alt = 'Molea
       ref={ref}
       src="/images/moleaer-logo.png"
       alt={alt}
-      width={variant === 'footer' ? 420 : 328}
-      height={variant === 'footer' ? 120 : 86}
+      width={235}
+      height={67}
       className={`${base} ${ready ? 'ready' : ''} ${className}`.trim()}
       decoding="async"
       {...(priority ? { fetchPriority: 'high' as const } : { loading: 'lazy' as const })}

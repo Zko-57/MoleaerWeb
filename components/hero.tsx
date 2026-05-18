@@ -14,6 +14,20 @@ const PARALLAX_VISUAL: [number, number] = [0, -24];
 const PARALLAX_SCALE_ON: [number, number] = [1, 1.02];
 const PARALLAX_SCALE_OFF: [number, number] = [1, 1];
 
+const HERO_STAGGER_ITEM_VARIANTS = {
+  hidden: { y: 16 },
+  show: { y: 0 },
+} as const;
+
+const HERO_STAGGER_CHILD_TRANSITION = { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const };
+
+const HERO_STAGGER_PARENT_VARIANTS = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.07, delayChildren: 0.14 },
+  },
+} as const;
+
 const HERO_STAGGER_ITEMS: ReactNode[] = [
   <Link
     key="a"
@@ -147,22 +161,10 @@ function RevealStaggerRow({ items }: { items: ReactNode[] }) {
       initial={false}
       whileInView={animate ? 'show' : undefined}
       viewport={{ once: true, margin: '-60px' }}
-      variants={{
-        hidden: {},
-        show: {
-          transition: { staggerChildren: 0.07, delayChildren: 0.14 },
-        },
-      }}
+      variants={HERO_STAGGER_PARENT_VARIANTS}
     >
       {items.map((child, i) => (
-        <m.div
-          key={i}
-          variants={{
-            hidden: { y: 16 },
-            show: { y: 0 },
-          }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <m.div key={i} variants={HERO_STAGGER_ITEM_VARIANTS} transition={HERO_STAGGER_CHILD_TRANSITION}>
           {child}
         </m.div>
       ))}

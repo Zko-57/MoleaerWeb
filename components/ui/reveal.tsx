@@ -13,6 +13,12 @@ type Props = {
 
 const REVEAL_EASE = [0.22, 1, 0.36, 1] as const;
 
+/** Referencias estables: evita recalcular variantes en cada render de Framer. */
+const STAGGER_CHILD_VARIANTS = {
+  hidden: { y: 22 },
+  show: { y: 0 },
+} as const;
+
 export function Reveal({ children, className = '', delay = 0, y = 28 }: Props) {
   const mounted = useMounted();
   const reduce = useReducedMotion();
@@ -90,14 +96,7 @@ export function RevealStagger({
       variants={parentVariants}
     >
       {items.map((child, i) => (
-        <m.div
-          key={i}
-          variants={{
-            hidden: { y: 22 },
-            show: { y: 0 },
-          }}
-          transition={childTransition}
-        >
+        <m.div key={i} variants={STAGGER_CHILD_VARIANTS} transition={childTransition}>
           {child}
         </m.div>
       ))}

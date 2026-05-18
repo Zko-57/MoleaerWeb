@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { m } from 'framer-motion';
 import { useMounted } from '@/hooks/use-mounted';
 
@@ -30,7 +30,7 @@ const QUOTES = [
     name: 'Steve Manos',
     role: 'Alcalde · Lake Elsinore, USA',
   },
-];
+] as const;
 
 function visibleCount(w: number) {
   if (w < 720) return 1;
@@ -38,9 +38,33 @@ function visibleCount(w: number) {
   return 3;
 }
 
+const CARD_GAP = 24;
+
+const CAROUSEL_SPRING = { type: 'spring' as const, stiffness: 280, damping: 34 };
+
+const QuoteCard = memo(function QuoteCard({ q }: { q: (typeof QUOTES)[number] }) {
+  return (
+    <article
+      data-card
+      className="glass-strong flex w-[calc(100vw-2.5rem)] shrink-0 flex-col gap-4 p-9 sm:w-[calc(50vw-2rem)] lg:w-[calc((100vw-4rem)/3-0.5rem)] lg:max-w-[calc(416px)]"
+    >
+      <div className="font-display text-2xl leading-none text-cyan-light/80" aria-hidden>
+        {'\u201C'}
+      </div>
+      <p className="text-[0.98rem] leading-relaxed text-zinc-300">{q.text}</p>
+      <footer className="mt-auto border-t border-white/10 pt-4 text-sm">
+        <strong className="text-white">{q.name}</strong>
+        <div className="text-zinc-500">{q.role}</div>
+      </footer>
+    </article>
+  );
+});
+
 export function TestimonialCarousel() {
   const mounted = useMounted();
   const trackRef = useRef<HTMLDivElement>(null);
+  const cardWidthCache = useRef(0);
+  const prevGwRef = useRef<number | null>(null);
   const [i, setI] = useState(0);
   const [gw, setGw] = useState(1200);
   const [translate, setTranslate] = useState(0);
@@ -49,18 +73,25 @@ export function TestimonialCarousel() {
   const max = Math.max(0, QUOTES.length - v);
   const idx = Math.min(Math.max(i, 0), max);
 
-  const measure = useCallback(() => {
+  /**
+   * Solo fuerza lectura de layout cuando cambia el ancho de ventana (gw) o aún no hay caché.
+   * Al cambiar solo el índice del slide se reutiliza el ancho medido → menos forced reflow.
+   */
+  useLayoutEffect(() => {
     const track = trackRef.current;
     if (!track) return;
     const card = track.querySelector<HTMLElement>('[data-card]');
     if (!card) return;
-    const w = card.getBoundingClientRect().width;
-    setTranslate(idx * (w + 24));
-  }, [idx]);
 
-  useLayoutEffect(() => {
-    measure();
-  }, [measure, gw]);
+    const gwChanged = prevGwRef.current !== gw;
+    prevGwRef.current = gw;
+
+    if (gwChanged || cardWidthCache.current <= 0) {
+      cardWidthCache.current = card.getBoundingClientRect().width;
+    }
+    const w = cardWidthCache.current;
+    setTranslate(idx * (w + CARD_GAP));
+  }, [idx, gw]);
 
   useEffect(() => {
     let rafId = 0;
@@ -94,29 +125,21 @@ export function TestimonialCarousel() {
     return () => clearInterval(t);
   }, []);
 
+  const xAnim = useMemo(() => (mounted ? { x: -translate } : false), [mounted, translate]);
+
+  const onPrev = useCallback(() => {
+    setI((p) => (p <= 0 ? max : p - 1));
+  }, [max]);
+
+  const onNext = useCallback(() => {
+    setI((p) => (p >= max ? 0 : p + 1));
+  }, [max]);
+
   return (
     <div className="relative overflow-hidden py-1">
-      <m.div
-        ref={trackRef}
-        className="flex gap-6"
-        animate={mounted ? { x: -translate } : false}
-        transition={{ type: 'spring', stiffness: 280, damping: 34 }}
-      >
+      <m.div ref={trackRef} className="flex gap-6" animate={xAnim} transition={CAROUSEL_SPRING}>
         {QUOTES.map((q, k) => (
-          <article
-            key={k}
-            data-card
-            className="glass-strong flex w-[calc(100vw-2.5rem)] shrink-0 flex-col gap-4 p-9 sm:w-[calc(50vw-2rem)] lg:w-[calc((100vw-4rem)/3-0.5rem)] lg:max-w-[calc(416px)]"
-          >
-            <div className="font-display text-2xl leading-none text-cyan-light/80" aria-hidden>
-              {'\u201C'}
-            </div>
-            <p className="text-[0.98rem] leading-relaxed text-zinc-300">{q.text}</p>
-            <footer className="mt-auto border-t border-white/10 pt-4 text-sm">
-              <strong className="text-white">{q.name}</strong>
-              <div className="text-zinc-500">{q.role}</div>
-            </footer>
-          </article>
+          <QuoteCard key={k} q={q} />
         ))}
       </m.div>
       <div className="mt-6 flex justify-center gap-3">
@@ -124,7 +147,7 @@ export function TestimonialCarousel() {
           type="button"
           aria-label="Anterior"
           className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-lg text-white transition-colors hover:bg-white/10"
-          onClick={() => setI((p) => (p <= 0 ? max : p - 1))}
+          onClick={onPrev}
         >
           ‹
         </button>
@@ -132,7 +155,7 @@ export function TestimonialCarousel() {
           type="button"
           aria-label="Siguiente"
           className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-lg text-white transition-colors hover:bg-white/10"
-          onClick={() => setI((p) => (p >= max ? 0 : p + 1))}
+          onClick={onNext}
         >
           ›
         </button>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useInView } from 'framer-motion';
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useId, useMemo, useRef, type CSSProperties } from 'react';
 
 function rnd(i: number, s: number) {
   const v = Math.sin((i + 1) * 12.9898 + s * 78.233) * 43758.5453;
@@ -88,15 +88,13 @@ export function NanoBubbleNetwork({ density = 'normal' }: { density?: 'low' | 'n
   const neighbors = density === 'low' ? 5 : 6;
 
   const rootRef = useRef<HTMLDivElement>(null);
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => setHydrated(true), []);
 
   const inView = useInView(rootRef, {
     amount: 0.12,
     margin: '100px 0px 120px 0px',
   });
 
-  const paused = !hydrated || !inView;
+  const paused = !inView;
 
   const { nodes, edges } = useMemo(() => buildNetwork(count, neighbors), [count, neighbors]);
 

@@ -9,13 +9,6 @@ const nextConfig: NextConfig = {
     removeConsole:
       process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
-  /**
-   * Importaciones más granulares desde el barrel de framer-motion → menos JS en el cliente.
-   * @see https://nextjs.org/docs/app/api-reference/config/next-config-js/optimizePackageImports
-   */
-  experimental: {
-    optimizePackageImports: ['framer-motion'],
-  },
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
