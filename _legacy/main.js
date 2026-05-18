@@ -60,13 +60,24 @@ document.addEventListener('DOMContentLoaded', () => {
     img.classList.add('ready');
   }
 
-  document.querySelectorAll('img.brand-logo').forEach(img => {
-    if (img.complete && img.naturalWidth) {
-      processBrandLogo(img);
+  const scheduleLogo = (fn) => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(fn, { timeout: 1200 });
     } else {
-      img.addEventListener('load', () => processBrandLogo(img), { once: true });
-      img.addEventListener('error', () => img.classList.add('ready'), { once: true });
+      setTimeout(fn, 1);
     }
+  };
+
+  document.querySelectorAll('img.brand-logo').forEach(img => {
+    const run = () => {
+      if (img.complete && img.naturalWidth) {
+        processBrandLogo(img);
+      } else {
+        img.addEventListener('load', () => processBrandLogo(img), { once: true });
+        img.addEventListener('error', () => img.classList.add('ready'), { once: true });
+      }
+    };
+    scheduleLogo(run);
   });
 
   /* =========================================================
@@ -100,7 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
       createNanoBubble();
     });
   }
-  for (let i = 0; i < BUBBLE_COUNT; i++) createNanoBubble();
+  if (particlesContainer) {
+    for (let i = 0; i < BUBBLE_COUNT; i++) createNanoBubble();
+  }
 
 
   /* =========================================================
@@ -168,18 +181,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       draw() {
         ctx.beginPath();
-        const gradient = ctx.createRadialGradient(this.x - this.r * 0.3, this.y - this.r * 0.3, 0, this.x, this.y, this.r);
-        gradient.addColorStop(0, `hsla(${this.hue}, 100%, 95%, ${this.opacity})`);
-        gradient.addColorStop(0.6, `hsla(${this.hue}, 90%, 70%, ${this.opacity * 0.4})`);
-        gradient.addColorStop(1, `hsla(${this.hue}, 90%, 50%, 0)`);
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = `hsla(${this.hue}, 88%, 68%, ${this.opacity})`;
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
     // Mitad de partículas que antes (60 vs 120) y limita por ancho
-    const COUNT = Math.min(60, Math.floor(width / 22));
+    const COUNT = Math.min(48, Math.floor(width / 24));
     for (let i = 0; i < COUNT; i++) bubbles.push(new Bubble());
 
     function animate() {
@@ -320,8 +329,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const glassPanels = document.querySelectorAll('.bento-item, .kpi-card, .industry-card');
 
   glassPanels.forEach(panel => {
-    panel.addEventListener('mousemove', (e) => {
-      if (window.innerWidth < 1024) return;
+    let glassRaf = 0;
+    let glassEv = null;
+
+    const applyTilt = () => {
+      glassRaf = 0;
+      const e = glassEv;
+      if (!e || window.innerWidth < 1024) return;
       const rect = panel.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -329,9 +343,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const centerY = rect.height / 2;
       const rotateX = ((y - centerY) / centerY) * -3;
       const rotateY = ((x - centerX) / centerX) * 3;
-      panel.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-    });
+      panel.style.transform =
+        `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(0, -4px, 0)`;
+    };
+
+    panel.addEventListener('mousemove', (e) => {
+      if (window.innerWidth < 1024) return;
+      glassEv = e;
+      if (!glassRaf) glassRaf = requestAnimationFrame(applyTilt);
+    }, { passive: true });
+
     panel.addEventListener('mouseleave', () => {
+      glassEv = null;
+      if (glassRaf) cancelAnimationFrame(glassRaf);
+      glassRaf = 0;
       panel.style.transform = '';
     });
   });
@@ -341,13 +366,17 @@ document.addEventListener('DOMContentLoaded', () => {
      7. NAVBAR DINÁMICO
      ========================================================= */
   const navbar = document.querySelector('.navbar');
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y > 50) navbar.classList.add('scrolled');
-    else navbar.classList.remove('scrolled');
-    lastScroll = y;
-  });
+  if (navbar) {
+    let scrollRaf = 0;
+    const onScrollNav = () => {
+      scrollRaf = 0;
+      const y = window.scrollY;
+      navbar.classList.toggle('scrolled', y > 50);
+    };
+    window.addEventListener('scroll', () => {
+      if (!scrollRaf) scrollRaf = requestAnimationFrame(onScrollNav);
+    }, { passive: true });
+  }
 
 
   /* =========================================================
@@ -382,7 +411,12 @@ document.addEventListener('DOMContentLoaded', () => {
         update();
       });
     });
-    window.addEventListener('resize', update);
+    let resizeT = 0;
+    const scheduleResize = () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(update, 120);
+    };
+    window.addEventListener('resize', scheduleResize, { passive: true });
     update();
 
     // Auto-play opcional
@@ -489,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const force = t * t * REPEL_STRENGTH;
           const ox = (dx / dist) * force;
           const oy = (dy / dist) * force;
-          b.wrap.style.transform = `translate(${ox.toFixed(1)}px, ${oy.toFixed(1)}px)`;
+          b.wrap.style.transform = `translate3d(${ox.toFixed(1)}px,${oy.toFixed(1)}px,0)`;
         } else {
           b.wrap.style.transform = '';
         }

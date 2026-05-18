@@ -54,42 +54,54 @@ button { font-family: inherit; cursor: pointer; }
   overflow: hidden;
   background: var(--bg-dark);
 }
-/* Capa acuática real — debajo de glows/particles para que las burbujas
-   sigan siendo el elemento principal. Oscurecida con un degradado para
-   preservar la legibilidad del texto y la coherencia con el dark theme. */
+/* Capa de imagen acuática: SOLO anima transform (compositor GPU).
+   Los filtros de color viven en pseudoelementos estáticos para evitar
+   repaints por frame (antes filter + transform en el mismo nodo). */
+.ambient-bg-pan {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('./images/underwater_ambient.jpg') center top / cover no-repeat;
+  transform: translate3d(0, 0, 0);
+  animation: ambient-drift 30s ease-in-out infinite alternate;
+  will-change: transform;
+  backface-visibility: hidden;
+}
 #ambient-background::before {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    /* Overlay con superficie luminosa arriba y oscura abajo:
-       deja ver la "superficie" del agua y conserva legibilidad debajo. */
-    linear-gradient(180deg,
-      rgba(2, 14, 30, 0.18) 0%,
-      rgba(2, 14, 30, 0.42) 40%,
-      rgba(2, 14, 30, 0.78) 100%
-    ),
-    url('./images/underwater_ambient.jpg') center top / cover no-repeat;
-  /* Se evita background-attachment: fixed por su coste de repaint en scroll.
-     En su lugar, posicionamos absoluto y dejamos que el contenedor fixed
-     del #ambient-background se encargue de la "fijeza" visual. */
-  opacity: 1;
-  filter: saturate(1.15) brightness(1.18) contrast(1.05) hue-rotate(-5deg);
-  z-index: 0;
-  animation: ambient-drift 30s ease-in-out infinite alternate;
-  will-change: transform;
+  z-index: 1;
+  pointer-events: none;
+  /* Degradado de legibilidad — capa estática encima de la imagen */
+  background: linear-gradient(180deg,
+    rgba(2, 14, 30, 0.18) 0%,
+    rgba(2, 14, 30, 0.42) 40%,
+    rgba(2, 14, 30, 0.78) 100%
+  );
+  /* Afinado cromático sin animación = mucho más barato que animar filter */
+  filter: saturate(1.12) brightness(1.14) contrast(1.04) hue-rotate(-5deg);
 }
 @keyframes ambient-drift {
-  0%   { transform: scale(1.05) translateY(0); }
-  100% { transform: scale(1.1)  translateY(-1%); }
+  0%   { transform: translate3d(0, 0, 0) scale(1.05); }
+  100% { transform: translate3d(0, -0.5%, 0) scale(1.1); }
 }
-/* Los glows y la grid deben quedar por encima de la capa acuática */
+/* Glows/grid: debajo del tinte radial ::after, encima del degradado */
 .glow, .tech-grid { z-index: 1; }
+/* tinte radial corporativo (estático) */
+#ambient-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%,  rgba(0, 90, 130, 0.30) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(0, 60, 100, 0.30) 0%, transparent 55%);
+  z-index: 2;
+  pointer-events: none;
+}
 
 /* ============ RAYOS DE LUZ DINÁMICOS ============
-   Cada rayo es un cono que parte de un punto luminoso en la superficie
-   y se ensancha al descender, imitando la luz solar atravesando ondas.
-   Se usa mix-blend-mode: screen para que sumen luz sin oscurecer. */
+   Solo transform + opacity (GPU). Sin blur en el mismo nodo que rota. */
 .light-rays {
   position: absolute;
   inset: 0;
@@ -115,26 +127,24 @@ button { font-family: inherit; cursor: pointer; }
   position: absolute;
   top: 0;
   height: 110%;
-  /* Gradiente muy suave, sin "hotspot": apenas un tinte luminoso
-     que se desvanece progresivamente hacia el fondo. */
+  /* Sin filter:blur aquí — animar blur/rotate juntos fuerza repaint */
   background: linear-gradient(
     180deg,
-    rgba(200, 235, 255, 0.18) 0%,
-    rgba(170, 220, 250, 0.12) 25%,
-    rgba(130, 200, 235, 0.06) 55%,
-    rgba(90,  180, 220, 0.02) 80%,
+    rgba(200, 235, 255, 0.14) 0%,
+    rgba(170, 220, 250, 0.09) 22%,
+    rgba(130, 200, 235, 0.05) 50%,
+    rgba(90,  180, 220, 0.02) 78%,
     transparent 100%
   );
-  /* Cono muy abierto: arriba menos estrecho para no parecer un haz láser */
   clip-path: polygon(38% 0%, 62% 0%, 92% 100%, 8% 100%);
-  filter: blur(18px);
   transform-origin: top center;
+  transform: translate3d(0, 0, 0);
   will-change: transform, opacity;
+  backface-visibility: hidden;
   opacity: 0;
 }
 
-/* Cinco rayos sutiles a distintos anchos y ritmos.
-   Menos rayos + más blur + opacidades bajas = ambiente natural. */
+/* Cinco rayos: ritmos distintos, animación solo opacity + 3D transform */
 .ray-1 { left: 14%; width: 200px; --tilt: -2deg;
   animation: ray-sway 18s ease-in-out infinite, ray-pulse 11s ease-in-out infinite; }
 .ray-2 { left: 32%; width: 150px; --tilt:  1deg;
@@ -151,8 +161,12 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Balanceo: oscilación mínima en torno a la inclinación base */
 @keyframes ray-sway {
-  0%, 100% { transform: rotate(calc(var(--tilt) - 0.8deg)) translateX(-4px); }
-  50%      { transform: rotate(calc(var(--tilt) + 0.8deg)) translateX(4px); }
+  0%, 100% {
+    transform: translate3d(-4px, 0, 0) rotateZ(calc(var(--tilt) - 0.8deg));
+  }
+  50% {
+    transform: translate3d(4px, 0, 0) rotateZ(calc(var(--tilt) + 0.8deg));
+  }
 }
 /* Pulsación muy contenida: la luz "respira" sin destacar */
 @keyframes ray-pulse {
@@ -160,17 +174,6 @@ button { font-family: inherit; cursor: pointer; }
   50%      { opacity: 0.45; }
 }
 
-/* Tinte aqua sutil superpuesto para reforzar el tono cyan corporativo */
-#ambient-background::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 0%,  rgba(0, 90, 130, 0.30) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 100%, rgba(0, 60, 100, 0.30) 0%, transparent 55%);
-  z-index: 2;
-  pointer-events: none;
-}
 .glow {
   position: absolute;
   border-radius: 50%;
@@ -186,8 +189,8 @@ button { font-family: inherit; cursor: pointer; }
 .glow-2 { bottom: -25%; right: -10%; width: 55vw; height: 55vw; background: #1f6feb; animation-delay: -7s; opacity: 0.25; }
 .glow-3 { top: 35%; left: 55%; width: 40vw; height: 40vw; background: rgba(102, 232, 224, 0.25); animation-delay: -14s; }
 @keyframes float-glow {
-  0%   { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(60px, 80px) scale(1.15); }
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(60px, 80px, 0) scale(1.15); }
 }
 
 /* Grid tecnológico sutil */
@@ -211,6 +214,8 @@ button { font-family: inherit; cursor: pointer; }
   height: 100%;
   z-index: -2;
   pointer-events: none;
+  contain: strict;
+  transform: translateZ(0);
 }
 
 /* Particles container */
@@ -220,6 +225,7 @@ button { font-family: inherit; cursor: pointer; }
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
+  contain: strict;
 }
 .nano-bubble {
   position: absolute;
@@ -228,13 +234,15 @@ button { font-family: inherit; cursor: pointer; }
   box-shadow: 0 0 8px rgba(0, 180, 216, 0.4), inset 0 0 4px rgba(255,255,255,0.7);
   bottom: -50px;
   animation: rise linear infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 @keyframes rise {
-  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  0%   { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
   10%  { opacity: 0.7; }
-  50%  { transform: translateY(-50vh) translateX(20px) scale(1.05); }
+  50%  { transform: translate3d(20px, -50vh, 0) scale(1.05); }
   90%  { opacity: 0.5; }
-  100% { transform: translateY(-110vh) translateX(-15px) scale(1.2); opacity: 0; }
+  100% { transform: translate3d(-15px, -110vh, 0) scale(1.2); opacity: 0; }
 }
 
 /* ============ TIPOGRAFÍA ============ */
@@ -276,8 +284,8 @@ h3 { font-size: 1.5rem; }
   animation: pulse-dot 2s ease-in-out infinite;
 }
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.3); }
+  0%, 100% { opacity: 1; transform: translateZ(0) scale(1); }
+  50% { opacity: 0.5; transform: translateZ(0) scale(1.3); }
 }
 .badge-light {
   background: rgba(255, 255, 255, 0.1);
@@ -288,8 +296,8 @@ h3 { font-size: 1.5rem; }
 /* ============ COMPONENTE GLASSMORPHISM ============ */
 .premium-glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow), var(--glass-highlight);
   border-radius: var(--radius-lg);
@@ -332,7 +340,7 @@ h3 { font-size: 1.5rem; }
   text-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 .btn-pill:hover {
-  transform: translateY(-2px);
+  transform: translate3d(0, -2px, 0);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.6),
     0 12px 32px rgba(0, 180, 216, 0.6);
@@ -346,7 +354,7 @@ h3 { font-size: 1.5rem; }
 .btn-ghost:hover {
   background: rgba(255,255,255,0.13);
   border-color: rgba(255,255,255,0.35);
-  transform: translateY(-2px);
+  transform: translate3d(0, -2px, 0);
 }
 .btn-large { padding: 16px 36px; font-size: 1.05rem; }
 .play-icon {
@@ -396,7 +404,7 @@ h3 { font-size: 1.5rem; }
   position: relative;
   transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.nav-logo:hover { transform: translateY(-1px); }
+.nav-logo:hover { transform: translate3d(0, -1px, 0); }
 
 /* Logo oficial Moleaer adaptado al dark theme.
    La imagen se reprocesa en canvas (main.js): fondo blanco → transparente,
@@ -407,9 +415,8 @@ h3 { font-size: 1.5rem; }
   user-select: none;
   -webkit-user-drag: none;
   filter: drop-shadow(0 0 14px rgba(0, 180, 216, 0.55));
-  transition: filter 0.35s ease, transform 0.35s ease;
-  will-change: filter;
-  opacity: 0;            /* invisible hasta que se procesa, evita parpadeo */
+  transition: opacity 0.35s ease, filter 0.35s ease;
+  opacity: 0;
 }
 .brand-logo.ready { opacity: 1; }
 
@@ -436,7 +443,7 @@ h3 { font-size: 1.5rem; }
 /* En navbar comprimido (scrolled) reduce ligeramente el logo */
 .navbar.scrolled .brand-logo-nav { width: 134px; }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin { to { transform: rotateZ(360deg); } }
 .nav-links { display: flex; gap: 30px; }
 .nav-links a {
   color: var(--text-main);
@@ -758,7 +765,7 @@ h3 { font-size: 1.5rem; }
   font-size: 0.95rem;
   transition: transform 0.3s;
 }
-.link-arrow:hover { transform: translateX(4px); }
+.link-arrow:hover { transform: translate3d(4px, 0, 0); }
 
 /* R&D Orb decorativo — Modelo atómico simétrico */
 .bento-rd {
@@ -786,11 +793,24 @@ h3 { font-size: 1.5rem; }
     inset 4px 4px 18px rgba(255, 255, 255, 0.25);
   position: relative;
   z-index: 3;
-  animation: pulse-orb 4.5s ease-in-out infinite;
 }
-@keyframes pulse-orb {
-  0%, 100% { box-shadow: 0 0 50px rgba(0,180,216,0.50), inset 0 -10px 30px rgba(0,0,0,0.35), inset 4px 4px 18px rgba(255,255,255,0.25); }
-  50%      { box-shadow: 0 0 85px rgba(0,180,216,0.85), inset 0 -10px 30px rgba(0,0,0,0.35), inset 4px 4px 18px rgba(255,255,255,0.30); }
+/* Halo exterior: solo opacity + scale (GPU). Evita animar box-shadow en el orbe. */
+.rd-orb::after {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  z-index: -1;
+  box-shadow: 0 0 72px rgba(0, 180, 216, 0.7);
+  opacity: 0.75;
+  animation: orb-halo 4.5s ease-in-out infinite;
+  pointer-events: none;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+@keyframes orb-halo {
+  0%, 100% { opacity: 0.55; transform: scale(0.94); }
+  50%      { opacity: 1;     transform: scale(1.06); }
 }
 
 /* Órbitas concéntricas — siempre fijas, sin rotación, perfectamente centradas */
@@ -819,8 +839,8 @@ h3 { font-size: 1.5rem; }
 .rd-orbit-3 { animation: orbit-spin 42s linear infinite; }
 
 @keyframes orbit-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from { transform: rotateZ(0deg); }
+  to   { transform: rotateZ(360deg); }
 }
 
 /* Satélites — posicionados con polar coords vía CSS variables.
@@ -839,14 +859,15 @@ h3 { font-size: 1.5rem; }
     rotate(var(--angle))
     translateY(calc(-1 * var(--orbit)));
   z-index: 2;
-  will-change: filter;
+  will-change: opacity;
   animation: sat-pulse 3.2s ease-in-out infinite;
   animation-delay: calc(var(--angle) / 720deg * 1s);
+  backface-visibility: hidden;
 }
-/* El pulse SOLO toca filter/opacity para no pisar el transform de posición */
+/* Pulso solo con opacity (evita repaint por filter animado) */
 @keyframes sat-pulse {
-  0%, 100% { filter: brightness(1)    drop-shadow(0 0 6px rgba(0, 224, 255, 0.6));  opacity: 0.92; }
-  50%      { filter: brightness(1.45) drop-shadow(0 0 12px rgba(0, 224, 255, 1));    opacity: 1; }
+  0%, 100% { opacity: 0.88; }
+  50%      { opacity: 1; }
 }
 
 /* ============ COMPARATIVA NANOBURBUJAS ============ */
@@ -882,6 +903,7 @@ h3 { font-size: 1.5rem; }
 .compare-bad .compare-visual { background: linear-gradient(180deg, rgba(50,10,10,0.2), rgba(0,15,35,0.6)); }
 .big-bubble {
   position: absolute;
+  bottom: 0;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(72,202,228,0.4) 50%, transparent 80%);
   border: 1px solid rgba(255,255,255,0.4);
@@ -889,14 +911,16 @@ h3 { font-size: 1.5rem; }
   animation: rise-big 4s linear infinite;
   cursor: default;
   will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 .bb-1 { width: 50px; height: 50px; left: 20%; animation-delay: 0s; }
 .bb-2 { width: 70px; height: 70px; left: 50%; animation-delay: -1.3s; }
 .bb-3 { width: 35px; height: 35px; left: 75%; animation-delay: -2.6s; }
 @keyframes rise-big {
-  0%   { bottom: -10%; opacity: 0; transform: scale(0.5); }
-  20%  { opacity: 1; }
-  100% { bottom: 110%; opacity: 0; transform: scale(1); }
+  0%   { transform: translate3d(0, 120%, 0) scale(0.5); opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: translate3d(0, -650%, 0) scale(1); opacity: 0; }
 }
 
 /* Explosión sutil al hover */
@@ -957,14 +981,15 @@ h3 { font-size: 1.5rem; }
   box-shadow: 0 0 6px rgba(0, 180, 216, 0.7);
   animation: float-nano 5s ease-in-out infinite;
   will-change: transform, opacity;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   pointer-events: auto;
+  backface-visibility: hidden;
 }
 @keyframes float-nano {
-  0%, 100% { transform: translate(-50%, -50%);                 opacity: 0.7; }
-  25%      { transform: translate(calc(-50% - 4px), calc(-50% - 3px)); opacity: 0.95; }
-  50%      { transform: translate(calc(-50% + 5px), calc(-50% - 5px)); opacity: 1; }
-  75%      { transform: translate(calc(-50% + 3px), calc(-50% + 3px)); opacity: 0.85; }
+  0%, 100% { transform: translate3d(-50%, -50%, 0);                 opacity: 0.7; }
+  25%      { transform: translate3d(calc(-50% - 4px), calc(-50% - 3px), 0); opacity: 0.95; }
+  50%      { transform: translate3d(calc(-50% + 5px), calc(-50% - 5px), 0); opacity: 1; }
+  75%      { transform: translate3d(calc(-50% + 3px), calc(-50% + 3px), 0); opacity: 0.85; }
 }
 .compare-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 .compare-list li {
@@ -1304,6 +1329,8 @@ h3 { font-size: 1.5rem; }
   gap: 24px;
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   padding: 4px;
+  will-change: transform;
+  transform: translateZ(0);
 }
 .testimonial-card {
   padding: 40px;
@@ -1660,11 +1687,11 @@ h3 { font-size: 1.5rem; }
 /* ============ SCROLL REVEAL ============ */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translate3d(0, 40px, 0);
   transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
               transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+.scroll-reveal.visible { opacity: 1; transform: translate3d(0, 0, 0); }
 .delay-1 { transition-delay: 0.12s; }
 .delay-2 { transition-delay: 0.24s; }
 .delay-3 { transition-delay: 0.36s; }
@@ -1759,6 +1786,8 @@ h3 { font-size: 1.5rem; }
   /* La imagen acuática se simplifica sin filtros pesados */
   #ambient-background::before {
     filter: saturate(1.05) brightness(1.05) hue-rotate(-5deg);
+  }
+  .ambient-bg-pan {
     animation: none;
   }
   /* Menos backdrop-filter en tarjetas: usa fondo opaco */

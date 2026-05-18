@@ -1,0 +1,467 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* —— Design tokens —— */
+:root {
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --section-y: clamp(5rem, 12vw, 8.75rem);
+}
+
+/* Logo Moleaer — misma adaptación al dark theme que _legacy (canvas en BrandLogo) */
+.brand-logo {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 0 14px rgba(0, 180, 216, 0.55));
+  transition:
+    opacity 0.35s ease,
+    filter 0.35s ease,
+    width 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  opacity: 0;
+}
+.brand-logo.ready {
+  opacity: 1;
+}
+.nav-logo:hover .brand-logo {
+  filter: drop-shadow(0 0 22px rgba(0, 224, 255, 0.85));
+}
+.nav-logo {
+  position: relative;
+  text-decoration: none;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.nav-logo:hover {
+  transform: translate3d(0, -1px, 0);
+}
+.nav-logo::before {
+  content: '';
+  position: absolute;
+  inset: -10px -14px;
+  background: radial-gradient(closest-side, rgba(0, 180, 216, 0.28), transparent 70%);
+  filter: blur(8px);
+  opacity: 0.55;
+  z-index: -1;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.nav-logo:hover::before {
+  opacity: 1;
+}
+.brand-logo-nav {
+  width: 152px;
+}
+.brand-logo-nav--compact {
+  width: 134px;
+}
+.brand-logo-footer {
+  width: 210px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Respaldo oscuro: si la capa .ambient queda detrás del lienzo, evita “pantalla blanca” + texto invisible */
+    background-color: #02040a;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    @apply min-h-screen bg-transparent text-zinc-100 antialiased;
+  }
+}
+
+/* —— Ambient: one drifting layer (transform only), static tint —— */
+.ambient {
+  /* z-0 (no negativo): -z-* puede quedar detrás del fondo del documento y verse solo el lienzo blanco */
+  @apply pointer-events-none fixed inset-0 z-0 overflow-hidden bg-abyss;
+}
+.ambient__bg {
+  @apply absolute inset-0 bg-cover bg-top bg-no-repeat will-change-transform;
+  background-image: url('/images/underwater_ambient.jpg');
+  transform: translate3d(0, 0, 0);
+  animation: ambientDrift 36s ease-in-out infinite alternate;
+  backface-visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient__bg {
+    animation: none;
+  }
+}
+@keyframes ambientDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(0, -0.4%, 0) scale(1.08);
+  }
+}
+.ambient__tint {
+  @apply absolute inset-0 z-[1];
+  background: linear-gradient(
+    180deg,
+    rgba(2, 14, 30, 0.2) 0%,
+    rgba(2, 14, 30, 0.45) 45%,
+    rgba(2, 14, 30, 0.78) 100%
+  );
+  filter: saturate(1.08) brightness(1.08) contrast(1.03) hue-rotate(-4deg);
+}
+.ambient__veil {
+  @apply absolute inset-0 z-[2];
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(0, 90, 130, 0.22), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 82% 100%, rgba(0, 60, 100, 0.2), transparent 55%);
+}
+.ambient__grid {
+  @apply absolute inset-0 z-[1] opacity-[0.45];
+  background-image:
+    linear-gradient(to right, rgba(0, 180, 216, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 180, 216, 0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+}
+
+/* Subtle light shafts: opacity + transform only (no blur on animated nodes) */
+.light-rays {
+  @apply pointer-events-none absolute inset-0 z-[3];
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(180deg, black 0%, rgba(0, 0, 0, 0.5) 42%, transparent 78%);
+}
+.ray {
+  @apply absolute top-0 h-[112%] w-40 opacity-0 will-change-transform;
+  transform: translate3d(0, 0, 0);
+  transform-origin: top center;
+  background: linear-gradient(
+    180deg,
+    rgba(200, 235, 255, 0.1) 0%,
+    rgba(130, 210, 240, 0.05) 50%,
+    transparent 100%
+  );
+  clip-path: polygon(40% 0%, 60% 0%, 92% 100%, 8% 100%);
+  animation: raySway 22s ease-in-out infinite, rayPulse 9s ease-in-out infinite;
+  backface-visibility: hidden;
+}
+.ray:nth-child(2) {
+  animation-delay: -3s, -1.5s;
+  left: 28%;
+  width: 8rem;
+}
+.ray:nth-child(3) {
+  animation-delay: -6s, -4s;
+  left: 48%;
+  width: 11rem;
+}
+.ray:nth-child(4) {
+  animation-delay: -2s, -2.5s;
+  left: 66%;
+  width: 7rem;
+}
+.ray:nth-child(5) {
+  animation-delay: -8s, -3.2s;
+  left: 82%;
+  width: 6rem;
+}
+.ray:first-child {
+  left: 14%;
+}
+@keyframes raySway {
+  0%,
+  100% {
+    transform: translate3d(-3px, 0, 0) rotate(-1deg);
+  }
+  50% {
+    transform: translate3d(3px, 0, 0) rotate(1deg);
+  }
+}
+@keyframes rayPulse {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}
+@media (max-width: 900px) {
+  .light-rays {
+    display: none;
+  }
+}
+
+/* Glass surface — single moderate blur */
+@layer components {
+  .glass {
+    @apply rounded-[1.75rem] border border-white/10 bg-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.45)];
+    @apply backdrop-blur-md backdrop-saturate-[1.25];
+  }
+  .glass-strong {
+    @apply rounded-[1.75rem] border border-white/[0.12] bg-white/[0.08];
+    @apply backdrop-blur-md;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-br from-white via-cyan-light to-aqua bg-clip-text text-transparent;
+  }
+  /** Subrayado cyan con brillo suave (compare cards Nanoburbujas / MOLEAER) */
+  .panel-cyan-underline {
+    @apply relative inline-block;
+  }
+  .panel-cyan-underline::after {
+    content: '';
+    @apply pointer-events-none absolute left-0 right-0;
+    bottom: -0.32em;
+    height: 1px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(72, 202, 228, 0.15) 14%,
+      rgba(96, 224, 255, 0.98) 50%,
+      rgba(72, 202, 228, 0.15) 86%,
+      transparent 100%
+    );
+    box-shadow:
+      0 0 10px rgba(0, 224, 255, 0.5),
+      0 0 22px rgba(0, 180, 216, 0.2);
+  }
+}
+
+/* R&D orb — CSS only, opacity pulse on satellites */
+.rd-system {
+  @apply relative flex h-[280px] w-[280px] items-center justify-center sm:w-[360px] sm:h-[360px];
+}
+.rd-ring {
+  @apply pointer-events-none absolute left-1/2 top-1/2 rounded-full border border-cyan/40;
+  transform: translate3d(-50%, -50%, 0);
+}
+.rd-ring-1 {
+  @apply h-[190px] w-[190px];
+}
+.rd-ring-2 {
+  @apply h-[260px] w-[260px] border-cyan/30;
+}
+.rd-ring-3 {
+  @apply h-[330px] w-[330px] border-cyan/20;
+}
+.rd-orb {
+  @apply relative z-[3] h-[120px] w-[120px] rounded-full;
+  background: radial-gradient(circle at 35% 30%, #fff, #48cae4 35%, #00b4d8 65%, #0a4566 100%);
+  box-shadow:
+    0 0 48px rgba(0, 180, 216, 0.45),
+    inset 0 -8px 24px rgba(0, 0, 0, 0.35),
+    inset 3px 3px 14px rgba(255, 255, 255, 0.22);
+}
+.rd-orb::after {
+  content: '';
+  @apply pointer-events-none absolute z-[-1] rounded-full;
+  inset: -12px;
+  box-shadow: 0 0 64px rgba(0, 180, 216, 0.55);
+  opacity: 0.65;
+  animation: orbHalo 5s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes orbHalo {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.04);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-orb::after {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+.rd-orbit {
+  @apply pointer-events-none absolute inset-0 will-change-transform;
+}
+.rd-orbit-1 {
+  animation: orbit 20s linear infinite;
+}
+.rd-orbit-2 {
+  animation: orbit 28s linear infinite reverse;
+}
+.rd-orbit-3 {
+  animation: orbit 44s linear infinite;
+}
+@keyframes orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-orbit-1,
+  .rd-orbit-2,
+  .rd-orbit-3 {
+    animation: none;
+  }
+}
+.rd-sat {
+  @apply absolute left-1/2 top-1/2 z-[2] h-2.5 w-2.5 rounded-full;
+  background: radial-gradient(circle at 35% 35%, #fff, #48cae4 60%);
+  box-shadow: 0 0 8px rgba(0, 224, 255, 0.85);
+  transform: translate3d(-50%, -50%, 0) rotate(var(--angle)) translateY(calc(-1 * var(--orbit)));
+  animation: satPulse 3.5s ease-in-out infinite;
+  animation-delay: calc(var(--angle) / 720 * 1s);
+}
+@keyframes satPulse {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes nanoNetDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  33% {
+    transform: translate3d(0.55, -0.4, 0);
+  }
+  66% {
+    transform: translate3d(-0.35, 0.5, 0);
+  }
+}
+.nano-net-drift {
+  transform-origin: 0 0;
+  animation-name: nanoNetDrift;
+  animation-duration: var(--nn-dur, 12s);
+  animation-delay: var(--nn-delay, 0s);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+/* Fuera de vista: deja de animar ~200 nodos (gran ahorro de CPU) */
+.nano-net--paused .nano-net-drift {
+  animation: none;
+}
+.nano-net-lines {
+  opacity: 0.32;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nano-net-drift {
+    animation: none;
+  }
+  .nano-net-lines {
+    opacity: 0.22;
+  }
+}
+
+/* Nano pattern: pseudo-random dots via CSS (no 90 DOM nodes) */
+.nano-pattern {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(72, 202, 228, 0.5) 0, transparent 42%),
+    radial-gradient(circle at 62% 32%, rgba(255, 255, 255, 0.35) 0, transparent 38%),
+    radial-gradient(circle at 38% 71%, rgba(72, 202, 228, 0.45) 0, transparent 40%),
+    radial-gradient(circle at 82% 58%, rgba(96, 224, 255, 0.4) 0, transparent 36%),
+    radial-gradient(circle at 24% 55%, rgba(255, 255, 255, 0.22) 0, transparent 32%),
+    radial-gradient(circle at 76% 22%, rgba(72, 202, 228, 0.35) 0, transparent 34%);
+  background-size: 100% 100%;
+  animation: nanoShimmer 12s ease-in-out infinite alternate;
+}
+@keyframes nanoShimmer {
+  0% {
+    filter: brightness(0.95);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    filter: brightness(1.08);
+    transform: translate3d(0.5%, -0.5%, 0) scale(1.02);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nano-pattern {
+    animation: none;
+  }
+}
+
+/* Compare bubbles — transform only */
+.big-bubble {
+  @apply pointer-events-none absolute rounded-full border border-white/35;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.75), rgba(72, 202, 228, 0.35) 50%, transparent 78%);
+  box-shadow: 0 0 16px rgba(72, 202, 228, 0.45);
+  animation: riseBubble 5s linear infinite;
+  bottom: 0;
+  backface-visibility: hidden;
+}
+.bb-1 {
+  @apply left-[18%] h-[50px] w-[50px];
+  animation-delay: 0s;
+}
+.bb-2 {
+  @apply left-[48%] sm:left-[50%] h-[58px] w-[58px] sm:h-[70px] sm:w-[70px];
+  animation-delay: -1.6s;
+}
+.bb-3 {
+  @apply left-[74%] h-8 w-8 sm:h-[35px] sm:w-[35px];
+  animation-delay: -3s;
+}
+@keyframes riseBubble {
+  0% {
+    transform: translate3d(0, 140%, 0) scale(0.55);
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -520%, 0) scale(1);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .big-bubble {
+    animation: none;
+    opacity: 0.35;
+    transform: translate3d(0, -120%, 0);
+  }
+}
+
+/* Comparison zoom */
+.comparison-zoom img {
+  @apply h-full w-full object-cover transition-transform duration-700 ease-out;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+.comparison-root[data-focus='bad'] .comparison-zoom img {
+  transform: translate3d(8%, 0, 0) scale(1.65);
+}
+.comparison-root[data-focus='good'] .comparison-zoom img {
+  transform: translate3d(-6%, 0, 0) scale(1.55);
+}
+@media (max-width: 900px) {
+  .comparison-root[data-focus='bad'] .comparison-zoom img,
+  .comparison-root[data-focus='good'] .comparison-zoom img {
+    transform: translate3d(0, 0, 0) scale(1.12);
+  }
+}
+
+/* FAQ — native details, no JS */
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+}
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+.faq-item .faq-icon {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.faq-item[open] .faq-icon {
+  transform: rotate(45deg);
+}
