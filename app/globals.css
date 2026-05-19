@@ -334,29 +334,27 @@
   }
 }
 
+/* Porcentajes relativos al viewBox del SVG (transform-box: view-box); valores sin unidad eran CSS inválido y la animación no corría en varios navegadores. */
 @keyframes nanoNetDrift {
   0%,
   100% {
     transform: translate3d(0, 0, 0);
   }
   33% {
-    transform: translate3d(0.92, -0.68, 0);
+    transform: translate3d(0.92%, -0.68%, 0);
   }
   66% {
-    transform: translate3d(-0.6, 0.82, 0);
+    transform: translate3d(-0.6%, 0.82%, 0);
   }
 }
 .nano-net-drift {
+  transform-box: view-box;
   transform-origin: 0 0;
   animation-name: nanoNetDrift;
   animation-duration: var(--nn-dur, 12s);
   animation-delay: var(--nn-delay, 0s);
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-}
-/* Fuera de vista: deja de animar ~200 nodos (gran ahorro de CPU) */
-.nano-net--paused .nano-net-drift {
-  animation: none;
 }
 .nano-net-lines {
   opacity: 0.32;

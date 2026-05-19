@@ -118,8 +118,10 @@ export function Hero() {
                 alt="Esfera de agua con nanoburbujas y circuito tecnológico"
                 fill
                 className="object-cover"
-                sizes="(max-width:1024px) 100vw, 46vw"
+                sizes="(max-width: 1023px) 448px, min(520px, 46vw)"
+                quality={70}
                 priority
+                fetchPriority="high"
               />
             </div>
             <div

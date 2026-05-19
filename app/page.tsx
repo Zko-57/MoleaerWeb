@@ -124,7 +124,8 @@ export default function HomePage() {
                 alt="Nanoburbujas suspendidas en agua"
                 fill
                 className="object-cover"
-                sizes="(max-width:1024px) 100vw, 33vw"
+                sizes="(max-width: 1023px) min(100vw, 720px), min(440px, 38vw)"
+                quality={70}
                 loading="lazy"
               />
             </div>
@@ -306,7 +307,8 @@ export default function HomePage() {
                   alt="Manos sosteniendo agua pura con nanoburbujas"
                   fill
                   className="object-cover"
-                  sizes="(max-width:1024px) 100vw, 50vw"
+                  sizes="(max-width: 1023px) min(100vw, 720px), min(640px, 48vw)"
+                  quality={70}
                   loading="lazy"
                 />
               </div>

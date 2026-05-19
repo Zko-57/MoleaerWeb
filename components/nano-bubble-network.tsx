@@ -1,7 +1,6 @@
 'use client';
 
-import { useInView } from 'framer-motion';
-import { useId, useMemo, useRef, type CSSProperties } from 'react';
+import { useId, useMemo, type CSSProperties } from 'react';
 
 function rnd(i: number, s: number) {
   const v = Math.sin((i + 1) * 12.9898 + s * 78.233) * 43758.5453;
@@ -87,23 +86,10 @@ export function NanoBubbleNetwork({ density = 'normal' }: { density?: 'low' | 'n
   const count = density === 'low' ? 86 : 196;
   const neighbors = density === 'low' ? 5 : 6;
 
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  const inView = useInView(rootRef, {
-    amount: 0.12,
-    margin: '100px 0px 120px 0px',
-  });
-
-  const paused = !inView;
-
   const { nodes, edges } = useMemo(() => buildNetwork(count, neighbors), [count, neighbors]);
 
   return (
-    <div
-      ref={rootRef}
-      className={`pointer-events-none absolute inset-0 overflow-hidden ${paused ? 'nano-net--paused' : ''}`}
-      aria-hidden
-    >
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_42%,rgba(72,202,228,0.22),transparent_58%)]" />
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
         <defs>

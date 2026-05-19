@@ -56,7 +56,8 @@ export function ComparisonSection() {
             alt="Comparativa de raíces con y sin Moleaer"
             fill
             className="object-cover"
-            sizes="(max-width:1024px) 100vw, 50vw"
+            sizes="(max-width: 1023px) min(100vw, 720px), min(640px, 50vw)"
+            quality={70}
             loading="lazy"
           />
         </div>
