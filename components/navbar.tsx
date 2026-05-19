@@ -202,7 +202,7 @@ export function Navbar() {
           }`}
         >
           <Link
-            href="#"
+            href="/dashboard"
             className={`${navCtaClass} hidden border border-white/18 text-white/90 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(255,255,255,0.08)] sm:inline-flex ${
               isShrunk ? 'px-4 py-2' : 'px-5 py-2.5'
             }`}

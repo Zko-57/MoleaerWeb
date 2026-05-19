@@ -2,10 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { MotionProvider } from '@/components/providers/motion-provider';
-import { AmbientBackground } from '@/components/ambient-background';
-import { Navbar } from '@/components/navbar';
-import { Footer } from '@/components/footer';
-import { WhatsAppFab } from '@/components/whatsapp-fab';
+import { DemoWatermark } from '@/components/demo-watermark';
 import { getSiteUrl } from '@/lib/site';
 
 const inter = Inter({
@@ -20,7 +17,6 @@ const space = Space_Grotesk({
   weight: ['500', '700'],
   variable: '--font-space',
   display: 'swap',
-  /** No compite con Inter en el crítico del LCP; carga cuando se usa display. */
   preload: false,
 });
 
@@ -46,13 +42,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" className={`${inter.variable} ${space.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-[#02040a] font-sans text-zinc-100 antialiased">
         <MotionProvider>
-          <AmbientBackground />
-          <div className="relative z-10 flex min-h-screen flex-col">
-            <Navbar />
-            {children}
-            <Footer />
-            <WhatsAppFab />
-          </div>
+          {children}
+          <DemoWatermark />
         </MotionProvider>
       </body>
     </html>
