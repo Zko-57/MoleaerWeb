@@ -56,6 +56,8 @@ export function Hero() {
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
+    /** Menos trabajo durante la hidratación; el parallax enlaza tras commit (mismo efecto visual). */
+    layoutEffect: false,
   });
   const contentY = useTransform(scrollYProgress, SCROLL_SEG, parallax ? PARALLAX_CONTENT : PARALLAX_OFF);
   const visualY = useTransform(scrollYProgress, SCROLL_SEG, parallax ? PARALLAX_VISUAL : PARALLAX_OFF);

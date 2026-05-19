@@ -20,7 +20,8 @@ const space = Space_Grotesk({
   weight: ['500', '700'],
   variable: '--font-space',
   display: 'swap',
-  preload: true,
+  /** No compite con Inter en el crítico del LCP; carga cuando se usa display. */
+  preload: false,
 });
 
 export const metadata: Metadata = {

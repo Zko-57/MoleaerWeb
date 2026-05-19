@@ -3,9 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Hero } from '@/components/hero';
-import { RdVisual } from '@/components/rd-visual';
-import { ComparisonSection } from '@/components/comparison-section';
-import { ContactForm } from '@/components/contact-form';
 import { Reveal, RevealStagger } from '@/components/ui/reveal';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { FaqDetails } from '@/components/faq-details';
@@ -16,6 +13,24 @@ const TestimonialCarousel = dynamic(
   () => import('@/components/testimonial-carousel').then((m) => ({ default: m.TestimonialCarousel })),
   { loading: () => <div className="h-48 animate-pulse rounded-2xl bg-white/[0.04]" aria-hidden /> },
 );
+
+/** Bajo el pliegue: chunks aparte → menos parse/hidratación inicial; mismos componentes y animaciones. */
+const RdVisual = dynamic(() => import('@/components/rd-visual').then((m) => ({ default: m.RdVisual })), {
+  loading: () => (
+    <div className="flex min-h-[280px] items-center justify-center sm:min-h-[360px]" aria-hidden>
+      <div className="h-36 w-36 animate-pulse rounded-full bg-white/[0.05]" />
+    </div>
+  ),
+});
+
+const ComparisonSection = dynamic(
+  () => import('@/components/comparison-section').then((m) => ({ default: m.ComparisonSection })),
+  { loading: () => <div className="min-h-[min(420px,70vh)] rounded-[1.75rem] bg-white/[0.03]" aria-hidden /> },
+);
+
+const ContactForm = dynamic(() => import('@/components/contact-form').then((m) => ({ default: m.ContactForm })), {
+  loading: () => <div className="min-h-[28rem] rounded-[1.75rem] bg-white/[0.04]" aria-hidden />,
+});
 
 const IconChem = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-7 w-7" aria-hidden>

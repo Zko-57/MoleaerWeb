@@ -83,8 +83,9 @@ function buildNetwork(count: number, neighbors: number) {
 /** Red de nanoburbujas — SVG único, animación transform-only sobre <g> */
 export function NanoBubbleNetwork({ density = 'normal' }: { density?: 'low' | 'normal' }) {
   const uid = useId().replace(/:/g, '');
-  const count = density === 'low' ? 86 : 196;
-  const neighbors = density === 'low' ? 5 : 6;
+  /** Menos líneas/nodos que 196×6: mismo CSS de drift, menos coste de pintura/comp. */
+  const count = density === 'low' ? 72 : 152;
+  const neighbors = density === 'low' ? 4 : 5;
 
   const { nodes, edges } = useMemo(() => buildNetwork(count, neighbors), [count, neighbors]);
 

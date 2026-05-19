@@ -93,9 +93,9 @@ function BrandLogoInner({ variant, compact = false, className = '', alt = 'Molea
 
     const schedule = (fn: () => void) => {
       if ('requestIdleCallback' in window) {
-        requestIdleCallback(fn, { timeout: 1200 });
+        requestIdleCallback(fn, { timeout: 2400 });
       } else {
-        setTimeout(fn, 1);
+        setTimeout(fn, 48);
       }
     };
 
