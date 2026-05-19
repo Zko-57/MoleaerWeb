@@ -25,10 +25,7 @@ export const metadata: Metadata = {
   description:
     'Moleaer es la compañía líder mundial en tecnología de nanoburbujas: tratamiento de agua, agricultura, acuicultura, lagos y aguas residuales sin químicos.',
   metadataBase: getSiteUrl(),
-  icons: {
-    icon: '/images/moleaer-logo.png',
-    apple: '/images/moleaer-logo.png',
-  },
+  /** Favicon: app/favicon.ico + app/icon.svg (oficial Moleaer), no el logo horizontal en pestaña. */
 };
 
 export const viewport: Viewport = {
